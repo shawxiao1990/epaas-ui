@@ -56,6 +56,28 @@ export const constantRoutes = [
   },
 
   {
+    path: '/ApplicationMarket',
+    component: Layout,
+    redirect: '',
+    name: 'Application Market',
+    meta: { title: 'Application Market', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'applist',
+        name: 'App List',
+        component: () => import('@/views/card/index'),
+        meta: { title: 'App List', icon: 'table' }
+      },
+      {
+        path: 'apppublish',
+        name: 'App Publish',
+        component: () => import('@/views/card/index'),
+        meta: { title: 'App Publish', icon: 'form' }
+      }
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',
