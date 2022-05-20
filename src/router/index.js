@@ -71,7 +71,7 @@ export const constantRoutes = [
       {
         path: 'apppublish',
         name: 'App Publish',
-        component: () => import('@/views/card/index'),
+        component: () => import('@/views/pubform/index'),
         meta: { title: 'App Publish', icon: 'form' }
       }
     ]
