@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form ref="postForm" :model="postForm" :rules="rules" label-width="120px">
-      <el-form-item label="App Name" prop="appname">
+    <el-form ref="defaultForm" :model="postForm" :rules="rules" label-width="120px">
+      <el-form-item label="App Name" prop="appname" :rules="rules.appname">
         <el-input v-model="postForm.appname" />
       </el-form-item>
       <el-form-item label="Database Service">
@@ -9,18 +9,18 @@
           <el-checkbox v-for="item in db" :key="item" :label="item" :value="item" />
         </el-checkbox-group>
       </el-form-item>
-    </el-form>
-    <el-form v-for="index of count" ref="postForm" :key="index" :model="postForm" :rules="rules" label-width="120px">
-      <el-divider content-position="left"><span style="color: #409EFF">Module {{ index }}</span></el-divider>
-      <el-form-item label="Module Name" prop="modulename">
-        <el-input ref="modulename" v-model="postForm.modulename[index]" placeholder="please input your service name" />
-      </el-form-item>
-      <el-form-item label="Image Name" prop="imagename">
-        <!-- <el-select v-model="postForm.imagename[index]" clearable filterable remote :remote-method="remoteMethod" placeholder="please select your image name" style="width:100%;"> -->
-        <el-select v-model="postForm.imagename[index]" v-scroll-load-more="loadmore" clearable filterable default-first-option :filter-method="dataFilter" placeholder="please type your image name for search" style="width:100%;">
-          <el-option v-for="item in loadedImageList" :key="item.id" :value="item.registry+'/'+item.repo+'/'+item.imagename+'/'+item.imagetag" />
-        </el-select>
-      </el-form-item>
+      <div v-for="index of count" :key="index">
+        <el-divider content-position="left"><span style="color: #409EFF">Module {{ index }}</span></el-divider>
+        <el-form-item label="Module Name" :prop="'modulename.'+(index-1)" :rules="rules.modulename">
+          <el-input v-model="postForm.modulename[index-1]" placeholder="please input your service name" />
+        </el-form-item>
+        <el-form-item label="Image Name" :prop="'imagename.'+(index-1)" :rules="rules.imagename">
+          <!-- <el-select v-model="postForm.imagename[index]" clearable filterable remote :remote-method="remoteMethod" placeholder="please select your image name" style="width:100%;"> -->
+          <el-select v-model="postForm.imagename[index-1]" v-scroll-load-more="loadmore" clearable filterable default-first-option :filter-method="dataFilter" placeholder="please type your image name for search" style="width:100%;">
+            <el-option v-for="item in loadedImageList" :key="item.id" :value="item.registry+'/'+item.repo+'/'+item.imagename+'/'+item.imagetag" />
+          </el-select>
+        </el-form-item>
+      </div>
     </el-form>
     <el-form :model="postForm" label-width="120px">
       <el-form-item>
@@ -37,6 +37,7 @@
 
 <script >
 import { getList } from '@/api/imagelist'
+import { createApp } from '@/api/applist'
 import scrollLoadMore from '@/directive/el-select/index'
 export default {
   directives: { scrollLoadMore },
@@ -59,8 +60,8 @@ export default {
       },
       postForm: {
         appname: '',
-        modulename: [],
-        imagename: [],
+        modulename: [''],
+        imagename: [''],
         db: []
       },
       db: ['mysql', 'redis'],
@@ -117,10 +118,18 @@ export default {
       }
     },
     onSubmit() {
-      this.$message('submit!')
-      this.$refs.postForm[0].validate(valid => {
+      this.$refs.defaultForm.validate((valid) => {
         if (valid) {
-          this.$message('submit!')
+          // this.$message('submit!')
+          createApp(this.postForm).then(() => {
+            this.$notify({
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            // this.$router.push({ path: '/ApplicationMarket/yamledit' })
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -136,9 +145,13 @@ export default {
     },
     onIncrement() {
       this.count++
+      this.postForm.imagename.push('')
+      this.postForm.modulename.push('')
     },
     onDecrement() {
       this.count--
+      this.postForm.modulename.pop()
+      this.postForm.imagename.pop('')
     },
     onCancel() {
       this.$message({
