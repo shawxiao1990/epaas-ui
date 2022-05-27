@@ -26,5 +26,16 @@ module.exports = [
         }
       }
     }
+  },
+
+  {
+    url: '/epaas/app/create',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
   }
 ]

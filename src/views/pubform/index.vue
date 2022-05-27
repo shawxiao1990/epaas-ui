@@ -128,7 +128,8 @@ export default {
               type: 'success',
               duration: 2000
             })
-            // this.$router.push({ path: '/ApplicationMarket/yamledit' })
+            this.$store.dispatch('publishapp/PushData', this.postForm)
+            this.$router.push({ path: '/ApplicationMarket/yamledit' })
           })
         } else {
           console.log('error submit!!')

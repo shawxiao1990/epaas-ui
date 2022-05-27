@@ -73,6 +73,11 @@ export const constantRoutes = [
         name: 'App Publish',
         component: () => import('@/views/pubform/index'),
         meta: { title: 'App Publish', icon: 'form' }
+      },
+      {
+        path: 'yamledit',
+        component: () => import('@/views/pubform/gen-yaml'),
+        hidden: true
       }
     ]
   },

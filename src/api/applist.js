@@ -7,3 +7,10 @@ export function getList(params) {
     params
   })
 }
+export function createApp(data) {
+  return request({
+    url: '/epaas/app/create',
+    method: 'post',
+    data
+  })
+}
