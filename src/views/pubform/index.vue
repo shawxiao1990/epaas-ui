@@ -37,7 +37,6 @@
 
 <script >
 import { getList } from '@/api/imagelist'
-import { createApp } from '@/api/applist'
 import scrollLoadMore from '@/directive/el-select/index'
 export default {
   directives: { scrollLoadMore },
@@ -121,16 +120,8 @@ export default {
       this.$refs.defaultForm.validate((valid) => {
         if (valid) {
           // this.$message('submit!')
-          createApp(this.postForm).then(() => {
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-            this.$store.dispatch('publishapp/PushData', this.postForm)
-            this.$router.push({ path: '/ApplicationMarket/yamledit' })
-          })
+          this.$store.dispatch('publishapp/PushData', this.postForm)
+          this.$router.push({ path: '/ApplicationMarket/yamledit' })
         } else {
           console.log('error submit!!')
           return false
