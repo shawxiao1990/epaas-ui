@@ -5,12 +5,14 @@ const user = require('./user')
 const table = require('./table')
 const applist = require('./applist')
 const imagelist = require('./imagelist')
+const role = require('./role')
 
 const mocks = [
   ...user,
   ...table,
   ...applist,
-  ...imagelist
+  ...imagelist,
+  ...role
 ]
 
 // for front mock
