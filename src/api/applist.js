@@ -14,3 +14,10 @@ export function createApp(data) {
     data
   })
 }
+export function updateApp(data) {
+  return request({
+    url: '/epaas/app/update',
+    method: 'post',
+    data
+  })
+}
