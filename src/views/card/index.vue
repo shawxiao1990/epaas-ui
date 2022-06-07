@@ -6,22 +6,34 @@
         <app-card :list="item" />
       </el-col>
     </el-row>
+    <pagination v-show="listTotal>0" :total="listTotal" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="fetchData" />
   </div>
 </template>
 
 <script>
 import AppCard from './components/AppCard.vue'
 import { getList } from '@/api/applist'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
   components: {
-    AppCard
+    AppCard,
+    Pagination
   },
   data() {
     return {
       list: null,
       listLoading: true,
-      filterText: ''
+      filterText: '',
+      myName: '',
+      listTotal: 0,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        title: undefined,
+        sort: '+id',
+        author: ''
+      }
     }
   },
   computed: {
@@ -37,14 +49,19 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
+      getList(this.listQuery).then(response => {
         this.list = response.data.items
         this.listLoading = false
+        this.listTotal = response.data.total
       })
     }
   }
 }
 </script>
 <style>
-
+.el-row {
+    margin-bottom: 20px;
+    display:flex;
+    flex-wrap: wrap;
+  }
 </style>

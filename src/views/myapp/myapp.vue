@@ -79,7 +79,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 500px; margin-left:50px;">
         <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
         </el-form-item>
@@ -91,6 +91,11 @@
             <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
+        <div v-for="index of docker_images_count" :key="index">
+          <el-form-item :label="'docker_images'+(index)">
+            <el-input v-model="temp.docker_images[index-1]" />
+          </el-form-item>
+        </div>
         <el-form-item label="Remark">
           <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
         </el-form-item>
@@ -138,11 +143,13 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      myName: '',
       listQuery: {
         page: 1,
         limit: 20,
         title: undefined,
-        sort: '+id'
+        sort: '+id',
+        author: ''
       },
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
@@ -152,8 +159,10 @@ export default {
         remark: '',
         timestamp: new Date(),
         title: '',
-        status: 'published'
+        status: 'published',
+        docker_images: ['']
       },
+      docker_images_count: 0,
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -167,11 +176,13 @@ export default {
     }
   },
   created() {
+    this.myName = store.getters.name
     this.getList()
   },
   methods: {
     getList() {
       this.listLoading = true
+      this.listQuery.author = this.myName
       getList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
@@ -213,8 +224,10 @@ export default {
         remark: '',
         timestamp: new Date(),
         title: '',
-        status: 'published'
+        status: 'published',
+        docker_images: []
       }
+      this.docker_images_count = this.temp.docker_images.length
     },
     handleCreate() {
       this.resetTemp()
@@ -228,7 +241,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = store.getters.name
+          this.temp.author = this.myName
           createApp(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
@@ -245,6 +258,7 @@ export default {
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
       this.temp.timestamp = new Date(this.temp.timestamp)
+      this.docker_images_count = this.temp.docker_images.length
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
