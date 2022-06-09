@@ -7,9 +7,12 @@
       <el-form-item label="Title">
         {{ list.title }}
       </el-form-item>
-      <div v-for="index in list.docker_images" :key="index">
-        <el-form-item :label="'docker_images'+(index)">
-          {{ list.docker_images[index-1] }}
+      <el-form-item label="Author">
+        {{ list.author }}
+      </el-form-item>
+      <div v-for="(item,index) in list.docker_images" :key="index">
+        <el-form-item :label="'docker_images_'+(index)">
+          {{ item }}
         </el-form-item>
       </div>
     </el-form>

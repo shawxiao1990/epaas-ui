@@ -8,7 +8,7 @@
       <div class="text item">app_id: {{ list.id }}</div>
       <div class="text item">author: {{ list.author }}</div>
       <div class="text item">description: {{ list.description }}</div>
-      <div class="text item">display_time: {{ list.display_time }}</div>
+      <div class="text item">timestamp: {{ list.timestamp | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</div>
       <el-button style="float: right; padding: 3px 0" type="text" @click="handleDetails(list.id)">Details</el-button>
     </el-card>
     <card-details :visible="dialogFormVisible" :list="list" @closeDetails="closeDetails" />
@@ -17,10 +17,16 @@
 
 <script>
 import CardDetails from './CardDetails.vue'
+import { parseTime } from '@/utils'
 
 export default {
   name: 'App',
   components: { CardDetails },
+  filters: {
+    parseTime(time, cFormat) {
+      return parseTime(time, cFormat)
+    }
+  },
   props: {
     list: {
       type: Object,

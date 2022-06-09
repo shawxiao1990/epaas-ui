@@ -3,7 +3,7 @@ const Mock = require('mockjs')
 const data = Mock.mock({
   'items|65': [{
     id: '@increment',
-    timestamp: +Mock.Random.date('T'),
+    'timestamp|+1000': +Mock.Random.date('T'),
     title: '@title(5, 10)',
     'status|1': ['published', 'draft'],
     'author|1': [
