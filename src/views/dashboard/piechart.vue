@@ -25,11 +25,27 @@ export default {
     height: {
       type: String,
       default: '200px'
+    },
+    metric: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      Usage: 0
+    }
+  },
+  watch: {
+    metric(val) {
+      if (val) {
+        this.metric = val
+        this.Usage = this.metric.Usage
+        this.setOptions(this.Usage)
+      }
     }
   },
   mounted() {
@@ -45,10 +61,12 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
-
+      this.setOptions(0)
+    },
+    setOptions(usage) {
       this.chart.setOption({
         title: {
-          text: '40%',
+          text: usage + '%',
           left: 'center',
           top: 61.5,
           textStyle: {
@@ -70,17 +88,17 @@ export default {
             center: ['50%', '50%'],
             avoidLabelOverlap: true,
             data: [
-              // itemSyle是单项的背景颜色设置。
+            // itemSyle是单项的背景颜色设置。
               { value: 60, itemStyle: { color: '#f1f1f1' }},
               { value: 40, itemStyle: { color: '#1890fe' }}
             ],
             label: {
-              // 将视觉引导图关闭
+            // 将视觉引导图关闭
               show: false
             },
             itemStyle: { // 设置的是每项之间的留白
               borderWidth: 7
-              // borderColor: '#fff'
+            // borderColor: '#fff'
             },
             // 初始化echarts的动画效果
             animationType: 'scale',
@@ -89,8 +107,7 @@ export default {
               return Math.random() * 200
             }
           }
-        ]
-      })
+        ] })
     }
   }
 }

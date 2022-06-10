@@ -15,9 +15,9 @@ for (let i = 0; i < count; i++) {
 
 const data = Mock.mock({
   item: {
-    memUsage: +Mock.Random.integer(200, 300),
+    Usage: +Mock.Random.integer(0, 100),
     timestamp: +Mock.Random.date('T'),
-    memTotle: 96
+    Totle: 96
   }
 })
 console.log(data.item)
