@@ -2,8 +2,8 @@
   <div class="dashboard-container">
     <div class="dashboard-text" style="border-bottom: 1px solid #ececec">STATUS</div>
     <el-row :gutter="40">
-      <el-col v-for="index of 4" :key="index" :span="6" :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <piechart :id="index" :metric="mymetric" />
+      <el-col v-for="(item,index) of mymetric" :key="index" :span="6" :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
+        <piechart :id="index" :metric-item="item" />
       </el-col>
     </el-row>
   </div>
@@ -21,14 +21,8 @@ export default {
     return {
       timer: null,
       dataLoading: false,
-      metric: {
-        memMetric: {
-          Usage: 0,
-          Totle: 0,
-          Perc: 0
-        }
-      },
-      mymetric: null
+      metric: [],
+      mymetric: [{}]
     }
   },
   computed: {
@@ -37,7 +31,7 @@ export default {
     ])
   },
   watch: {
-    'metric.memMetric'(val) {
+    metric(val) {
       if (val) {
         this.mymetric = val
       }
@@ -58,7 +52,7 @@ export default {
       this.dataLoading = true
       return new Promise((resolve, reject) => {
         fetchData().then(response => {
-          this.metric.memMetric = response.data
+          this.metric = response.data
           this.dataLoading = false
           resolve(true)
         }).catch(() => {

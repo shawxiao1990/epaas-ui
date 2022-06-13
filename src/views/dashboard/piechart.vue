@@ -31,12 +31,21 @@ export default {
       default() {
         return {}
       }
+    },
+    metricItem: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() {
     return {
       chart: null,
-      Usage: 0
+      item: 'loading',
+      Usage: 0,
+      Totle: 0,
+      Perc: 0
     }
   },
   watch: {
@@ -46,6 +55,30 @@ export default {
         this.Usage = this.metric.Usage
         this.setOptions(this.Usage)
       }
+    },
+    // metricItem(val) {
+    //   if (val) {
+    //     console.log('test')
+    //     this.item = Object.keys(val)[0]
+    //     this.Usage = val[Object.keys(val)[0]].Usage
+    //     this.Totle = val[Object.keys(val)[0]].Totle
+    //     this.Perc = Math.round((this.Usage / this.Totle) * 100)
+    //     this.setOptions(this.item, this.Perc)
+    //   }
+    // }
+    metricItem: {
+      handler: function(val, oldVal) {
+        if (Object.keys(val)[0] && this.chart) {
+          console.log('Object.keys(val)[0]', Object.keys(val)[0])
+          this.item = Object.keys(val)[0]
+          this.Usage = val[Object.keys(val)[0]].Usage
+          this.Totle = val[Object.keys(val)[0]].Totle
+          this.Perc = Math.round((this.Usage / this.Totle) * 100)
+          this.setOptions(this.item, this.Perc)
+          console.log('111')
+        }
+      },
+      immediate: true
     }
   },
   mounted() {
@@ -61,12 +94,12 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
-      this.setOptions(0)
+      this.setOptions(this.item, this.Perc)
     },
-    setOptions(usage) {
+    setOptions(item, Perc) {
       this.chart.setOption({
         title: {
-          text: usage + '%',
+          text: item + '\n\n' + Perc + '%',
           left: 'center',
           top: 61.5,
           textStyle: {

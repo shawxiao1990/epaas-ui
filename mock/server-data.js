@@ -14,11 +14,22 @@ for (let i = 0; i < count; i++) {
 // console.log(memoryData)
 
 const data = Mock.mock({
-  item: {
-    Usage: +Mock.Random.integer(0, 100),
-    timestamp: +Mock.Random.date('T'),
-    Totle: 96
-  }
+  item: [
+    {
+      memMetric: {
+        Usage: +Mock.Random.integer(0, 100),
+        timestamp: +Mock.Random.date('T'),
+        Totle: 96
+      }
+    },
+    {
+      cpuMetric: {
+        Usage: +Mock.Random.integer(0, 100),
+        timestamp: +Mock.Random.date('T'),
+        Totle: 96
+      }
+    }
+  ]
 })
 console.log(data.item)
 module.exports = [
@@ -26,6 +37,7 @@ module.exports = [
     url: '/epaas/server/data',
     type: 'get',
     response: config => {
+      // const metricItem = config.query
       const items = data.item
       return {
         code: 20000,
