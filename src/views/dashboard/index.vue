@@ -6,23 +6,31 @@
         <piechart :id="index" :metric-item="item" />
       </el-col>
     </el-row>
+    <div class="line-chart-container">
+      <lineChart id="traffic" height="100%" width="100%" :traffic-metric="trafficMetric" />
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import piechart from './piechart.vue'
-import { fetchData } from '@/api/serverdata'
+import lineChart from './LineMarker'
+import { fetchData, fetchDataTraffic } from '@/api/server-data'
 
 export default {
   name: 'Dashboard',
-  components: { piechart },
+  components: {
+    piechart,
+    lineChart
+  },
   data() {
     return {
       timer: null,
       dataLoading: false,
       metric: [],
-      mymetric: [{}]
+      mymetric: [{}],
+      trafficMetric: []
     }
   },
   computed: {
@@ -35,12 +43,18 @@ export default {
       if (val) {
         this.mymetric = val
       }
+    },
+    trafficMetric(val) {
+      if (val) {
+        this.trafficMetric = val
+      }
     }
   },
   created() {
     // this.getData()
     this.timer = setInterval(() => {
       setTimeout(this.getData, 0)
+      setTimeout(this.getDataTraffic, 0)
     }, 10000)
   },
   destroyed() {
@@ -53,6 +67,18 @@ export default {
       return new Promise((resolve, reject) => {
         fetchData().then(response => {
           this.metric = response.data
+          this.dataLoading = false
+          resolve(true)
+        }).catch(() => {
+          reject(false)
+        })
+      })
+    },
+    getDataTraffic() {
+      this.dataLoading = true
+      return new Promise((resolve, reject) => {
+        fetchDataTraffic().then(response => {
+          this.trafficMetric = response.data
           this.dataLoading = false
           resolve(true)
         }).catch(() => {
@@ -79,5 +105,10 @@ export default {
   width: 100%;
   height: calc(100vh - 84px);
 
+}
+.line-chart-container{
+  position: relative;
+  width: 50%;
+  height: calc(100vh - 84px);
 }
 </style>

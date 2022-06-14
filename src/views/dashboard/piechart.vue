@@ -26,12 +26,6 @@ export default {
       type: String,
       default: '200px'
     },
-    metric: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
     metricItem: {
       type: Object,
       default() {
@@ -49,33 +43,14 @@ export default {
     }
   },
   watch: {
-    metric(val) {
-      if (val) {
-        this.metric = val
-        this.Usage = this.metric.Usage
-        this.setOptions(this.Usage)
-      }
-    },
-    // metricItem(val) {
-    //   if (val) {
-    //     console.log('test')
-    //     this.item = Object.keys(val)[0]
-    //     this.Usage = val[Object.keys(val)[0]].Usage
-    //     this.Totle = val[Object.keys(val)[0]].Totle
-    //     this.Perc = Math.round((this.Usage / this.Totle) * 100)
-    //     this.setOptions(this.item, this.Perc)
-    //   }
-    // }
     metricItem: {
       handler: function(val, oldVal) {
         if (Object.keys(val)[0] && this.chart) {
-          console.log('Object.keys(val)[0]', Object.keys(val)[0])
           this.item = Object.keys(val)[0]
           this.Usage = val[Object.keys(val)[0]].Usage
           this.Totle = val[Object.keys(val)[0]].Totle
           this.Perc = Math.round((this.Usage / this.Totle) * 100)
           this.setOptions(this.item, this.Perc)
-          console.log('111')
         }
       },
       immediate: true
@@ -122,8 +97,8 @@ export default {
             avoidLabelOverlap: true,
             data: [
             // itemSyle是单项的背景颜色设置。
-              { value: 60, itemStyle: { color: '#f1f1f1' }},
-              { value: 40, itemStyle: { color: '#1890fe' }}
+              { value: 100 - Perc, itemStyle: { color: '#f1f1f1' }},
+              { value: Perc, itemStyle: { color: '#1890fe' }}
             ],
             label: {
             // 将视觉引导图关闭

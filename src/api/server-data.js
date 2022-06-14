@@ -7,3 +7,10 @@ export function fetchData(params) {
     params
   })
 }
+export function fetchDataTraffic(params) {
+  return request({
+    url: '/epaas/server/traffic',
+    method: 'get',
+    params
+  })
+}

@@ -1,37 +1,34 @@
 const Mock = require('mockjs')
 
-const memoryData = []
-const count = 100
-
-for (let i = 0; i < count; i++) {
-  memoryData.push(Mock.mock({
+const trafficData = Mock.mock({
+  items: [{
     id: '@increment',
-    item: 'memory',
-    metrics: Mock.Random.integer(1, 100), // 随机数值
-    'timestamp|+1000': +Mock.Random.date('T')
-  }))
-}
-// console.log(memoryData)
-
+    'timestamp|+1000': +Mock.Random.date('T'),
+    value: {
+      upstream: +Mock.Random.integer(0, 100),
+      downward: +Mock.Random.integer(0, 100)
+    }
+  }]
+})
 const data = Mock.mock({
   item: [
     {
       memMetric: {
-        Usage: +Mock.Random.integer(0, 100),
+        Usage: +Mock.Random.integer(0, 96),
         timestamp: +Mock.Random.date('T'),
         Totle: 96
       }
     },
     {
       cpuMetric: {
-        Usage: +Mock.Random.integer(0, 100),
+        Usage: +Mock.Random.integer(0, 96),
         timestamp: +Mock.Random.date('T'),
         Totle: 96
       }
     }
   ]
 })
-console.log(data.item)
+
 module.exports = [
   {
     url: '/epaas/server/data',
@@ -39,6 +36,18 @@ module.exports = [
     response: config => {
       // const metricItem = config.query
       const items = data.item
+      return {
+        code: 20000,
+        data: items
+      }
+    }
+  },
+  {
+    url: '/epaas/server/traffic',
+    type: 'get',
+    response: config => {
+      // const metricItem = config.query
+      const items = trafficData.items
       return {
         code: 20000,
         data: items
