@@ -140,14 +140,14 @@ export default {
 
       // console.log(this.series)
       this.chart.setOption({
-        backgroundColor: '#394056',
+        // backgroundColor: '#394056',
         title: {
           top: 20,
           text: this.id,
           textStyle: {
             fontWeight: 'normal',
             fontSize: 16,
-            color: '#F1F1F3'
+            color: '#394056'
           },
           left: '1%'
         },
@@ -169,7 +169,7 @@ export default {
           right: '4%',
           textStyle: {
             fontSize: 12,
-            color: '#F1F1F3'
+            color: '#394056'
           }
         },
         grid: {

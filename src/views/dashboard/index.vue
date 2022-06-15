@@ -29,7 +29,7 @@ export default {
       timer: null,
       dataLoading: false,
       metric: [],
-      mymetric: [{}],
+      mymetric: [{}, {}],
       trafficMetric: []
     }
   },
@@ -39,10 +39,13 @@ export default {
     ])
   },
   watch: {
-    metric(val) {
-      if (val) {
-        this.mymetric = val
-      }
+    metric: {
+      handler: function(val, oldVal) {
+        if (val) {
+          this.mymetric = val
+        }
+      },
+      immediate: false
     },
     trafficMetric(val) {
       if (val) {
@@ -110,5 +113,7 @@ export default {
   position: relative;
   width: 50%;
   height: calc(100vh - 84px);
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgb(0 0 0 / 5%);
 }
 </style>

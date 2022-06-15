@@ -54,6 +54,17 @@ export default {
         }
       },
       immediate: true
+    },
+    trafficMetric: {
+      handler: function(val, oldVal) {
+        if (Object.keys(val)[0] && this.chart) {
+          this.item = Object.keys(val)[0]
+          this.Usage = val[Object.keys(val)[0]].Usage
+          this.Totle = val[Object.keys(val)[0]].Totle
+          this.Perc = Math.round((this.Usage / this.Totle) * 100)
+          this.setOptions(this.item, this.Perc)
+        }
+      }
     }
   },
   mounted() {
