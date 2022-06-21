@@ -25,7 +25,8 @@ export default function(route) {
     ]
   }]
   var routeItems = store.getters.routes
-  routeItems.forEach(element => {
+  // console.log('routeItems', routeItems)
+  Object.keys(routeItems).forEach(endpoint => {
     var tmpRoute = {
       path: '',
       component: () => import('@/views/deploy/resource'),
@@ -33,10 +34,23 @@ export default function(route) {
       meta: { title: '', roles: ['admin', 'editor'] },
       children: []
     }
-    tmpRoute.path = element.path
-    tmpRoute.name = element.path
-    tmpRoute.meta.title = element.path
+    tmpRoute.path = routeItems[endpoint].path
+    tmpRoute.name = routeItems[endpoint].path
+    tmpRoute.meta.title = routeItems[endpoint].path
+    // console.log(tmpRoute)
     // tmpRoute.children = element.serverList
+    Object.keys(routeItems[endpoint].serverList).forEach(serverName => {
+      var tmpChildrenRoute = {
+        path: '',
+        component: () => import('@/views/deploy/resource'),
+        name: '',
+        meta: { title: '', roles: ['admin', 'editor'] }
+      }
+      tmpChildrenRoute.path = serverName
+      tmpChildrenRoute.name = serverName
+      tmpChildrenRoute.meta.title = serverName
+      tmpRoute.children.push(tmpChildrenRoute)
+    })
     resourceRoutes[0].children[0].children.push(tmpRoute)
   })
   return resourceRoutes

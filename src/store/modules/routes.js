@@ -1,6 +1,6 @@
 import { fetchData } from '@/api/server-endpoint'
 const state = {
-  routes: []
+  routes: {}
 }
 const mutations = {
   SET_ROUTES: (state, routeItems) => {
@@ -13,6 +13,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       fetchData().then(response => {
         var routeItems = response.data
+        // console.log(routeItems)
         commit('SET_ROUTES', routeItems)
         resolve(routeItems)
       }).catch(error => {
