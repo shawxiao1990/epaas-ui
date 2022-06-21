@@ -7,6 +7,7 @@ const applist = require('./applist')
 const imagelist = require('./imagelist')
 const role = require('./role')
 const server_data = require('./server-data')
+const server_endpoint = require('./server-endpoint')
 
 const mocks = [
   ...user,
@@ -14,7 +15,8 @@ const mocks = [
   ...applist,
   ...imagelist,
   ...role,
-  ...server_data
+  ...server_data,
+  ...server_endpoint
 ]
 
 // for front mock

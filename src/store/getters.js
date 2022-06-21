@@ -9,6 +9,7 @@ const getters = {
   introduction: state => state.user.introduction,
   roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,
-  appForm: state => state.publishapp.appForm
+  appForm: state => state.publishapp.appForm,
+  routes: state => state.routes.routes
 }
 export default getters
