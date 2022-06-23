@@ -19,7 +19,7 @@ export default function(route) {
       {
         path: 'ResourceReg',
         name: 'Resource Register',
-        component: () => import('@/views/pubform/index'),
+        component: () => import('@/views/deploy/myServer'),
         meta: { title: 'Resource Register', icon: 'form', roles: ['admin', 'editor'] }
       }
     ]
