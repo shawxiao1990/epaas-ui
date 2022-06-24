@@ -28,8 +28,8 @@ export default function(route) {
   // console.log('routeItems', routeItems)
   Object.keys(routeItems).forEach(endpoint => {
     var tmpRoute = {
-      path: '',
-      component: () => import('@/views/deploy/resource'),
+      path: endpoint,
+      component: () => import('@/views/deploy/endpoint'),
       name: '',
       meta: { title: '', roles: ['admin', 'editor'] },
       children: []

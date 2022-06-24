@@ -8,7 +8,7 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     [endpoint]: {
       id: '@increment',
-      path: /[a-z]{5}/,
+      path: endpoint,
       serverList: {
         [servername1]: /[1-9]{3}\.[1-9]{3}\.[1-9]{3}\.[1-9]{3}/,
         [servername2]: /[1-9]{3}\.[1-9]{3}\.[1-9]{3}\.[1-9]{3}/

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.serverip" placeholder="IP" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
@@ -23,14 +23,32 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="IP" prop="id" sortable="custom" align="center" width="200" :class-name="getSortClass('IP')">
+      <el-table-column label="IP" prop="id" sortable="custom" align="center" width="200" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.serverip }}</span>
         </template>
       </el-table-column>
       <el-table-column label="HOST NAME" min-wi dth="150px">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.servername }}</span>
+          <span>{{ row.servername }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Endpoint" prop="endpoint" align="center" width="200">
+        <template slot-scope="{row}">
+          <span class="link-type" @click="handleEndpoint(row)">
+            <el-tag>
+              {{ row.endpoint }}
+            </el-tag>
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="SSH login" align="center" class-name="status-col" width="200">
+        <template slot-scope="{row}">
+          <span class="link-type" @click="handleSSH(row)">
+            <el-tag>
+              >_
+            </el-tag>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
@@ -49,24 +67,14 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 500px; margin-left:50px;">
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+        <el-form-item label="IP" prop="serverip">
+          <el-input v-model="temp.serverip" />
         </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
+        <el-form-item label="HOST NAME" prop="servername">
+          <el-input v-model="temp.servername" />
         </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <div v-for="index of docker_images_count" :key="index">
-          <el-form-item :label="'docker_images'+(index)">
-            <el-input v-model="temp.docker_images[index-1]" />
-          </el-form-item>
-        </div>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+        <el-form-item label="Endpoint" prop="endpoint">
+          <el-input v-model="temp.endpoint" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -105,22 +113,17 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        title: undefined,
-        sort: '+id',
-        author: ''
+        serverip: undefined,
+        sort: '+id'
       },
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
-        id: undefined,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        docker_images: ['']
+        servername: undefined,
+        serverip: undefined,
+        endpoint: undefined
       },
-      docker_images_count: 0,
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -141,20 +144,23 @@ export default {
     getList() {
       this.listLoading = true
       this.list = []
-      this.listQuery.author = this.myName
       this.endpointObject = store.getters.routes
-      const { page = 1, limit = 20, sort } = this.listQuery
+      const { serverip, page = 1, limit = 20, sort } = this.listQuery
       Object.keys(this.endpointObject).forEach(endpoint => {
         Object.keys(this.endpointObject[endpoint].serverList).forEach(serverName => {
-          var resourceObj = { servername: serverName, serverip: this.endpointObject[endpoint].serverList[serverName] }
+          var resourceObj = { servername: serverName, serverip: this.endpointObject[endpoint].serverList[serverName], endpoint: endpoint }
           this.list.push(resourceObj)
         })
       })
+      this.list = this.list.filter(item => {
+        if (serverip && item.serverip.indexOf(serverip) < 0) return false
+        return true
+      })
+      if (sort === '-id') {
+        this.list = this.list.reverse()
+      }
       this.pageList = this.list.filter((item, index) => index < limit * page && index >= limit * (page - 1))
       this.total = this.list.length
-      if (sort === '-id') {
-        this.pageList = this.pageList.reverse()
-      }
       this.listLoading = false
     },
     handleFilter() {
@@ -184,14 +190,10 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        docker_images: []
+        servername: undefined,
+        serverip: undefined,
+        endpoint: undefined
       }
-      this.docker_images_count = this.temp.docker_images.length
     },
     handleCreate() {
       this.resetTemp()
@@ -204,8 +206,6 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = this.myName
           createServer(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
@@ -221,19 +221,24 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.docker_images_count = this.temp.docker_images.length
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    handleSSH(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.$router.push({ path: '/DeployManage/Resource/' + this.temp.endpoint + '/' + this.temp.servername })
+    },
+    handleEndpoint(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.$router.push({ path: '/DeployManage/Resource/' + this.temp.endpoint })
+    },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           updateServer(tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
