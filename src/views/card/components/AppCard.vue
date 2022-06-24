@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>{{ list.title }}</span>
-        <el-button style="float: right; padding: 3px 0" type="text">Deploy</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="handleDeploy(list.id)">Deploy</el-button>
       </div>
       <div class="text item">app_id: {{ list.id }}</div>
       <div class="text item">author: {{ list.author }}</div>
@@ -12,16 +12,18 @@
       <el-button style="float: right; padding: 3px 0" type="text" @click="handleDetails(list.id)">Details</el-button>
     </el-card>
     <card-details :visible="dialogFormVisible" :list="list" @closeDetails="closeDetails" />
+    <app-deploy :visible="dialogDeployFormVisible" :list="list" @closeDetails="closeDeploy" />
   </div>
 </template>
 
 <script>
 import CardDetails from './CardDetails.vue'
+import AppDeploy from './AppDeploy.vue'
 import { parseTime } from '@/utils'
 
 export default {
   name: 'App',
-  components: { CardDetails },
+  components: { CardDetails, AppDeploy },
   filters: {
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)
@@ -35,7 +37,8 @@ export default {
   },
   data() {
     return {
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      dialogDeployFormVisible: false
     }
   },
   methods: {
@@ -44,6 +47,12 @@ export default {
     },
     closeDetails(flag) {
       this.dialogFormVisible = false
+    },
+    handleDeploy(id) {
+      this.dialogDeployFormVisible = true
+    },
+    closeDeploy(flag) {
+      this.dialogDeployFormVisible = false
     }
   }
 }
