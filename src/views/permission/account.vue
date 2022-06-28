@@ -66,13 +66,19 @@
         <el-form-item label="introduction" prop="introduction">
           <el-input v-model="temp.introduction" />
         </el-form-item>
-        <div v-for="index in temp.roles.length" :key="index">
-          <el-form-item label="Roles" :prop="'roles.'+(index-1)">
+        <el-form-item label="Roles" prop="roles">
+          <div v-for="index in temp.roles.length" :key="index">
             <el-tag v-model="temp.roles[index-1]" closable @close="handleDeleteRole(index-1)">
               {{ temp.roles[index-1] }}
             </el-tag>
-          </el-form-item>
-        </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="tmpRole" placeholder="选择一个角色" style="width:100%;">
+            <el-option v-for="item in allRoles" :key="item.key" :value="item.name" />
+          </el-select>
+          <el-button @click="handleAddRole(tmpRole)">添加角色</el-button>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -89,6 +95,7 @@
 
 <script>
 import { getAllInfo, createUser, updateUser } from '@/api/user.js'
+import { getRoles } from '@/api/role.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import store from '@/store'
 
@@ -118,6 +125,8 @@ export default {
       temp: {
         roles: []
       },
+      allRoles: [],
+      tmpRole: null,
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -134,8 +143,14 @@ export default {
     this.myName = store.getters.name
     this.token = store.getters.token
     this.getList(this.token)
+    this.fetchRoles()
   },
   methods: {
+    fetchRoles() {
+      getRoles().then(response => {
+        this.allRoles = response.data
+      })
+    },
     getList(token) {
       this.listLoading = true
       this.list = []
@@ -217,12 +232,15 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      console.log(this.temp.roles)
+      // console.log(this.temp.roles)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+    },
+    handleAddRole(role) {
+      this.temp.roles.push(role)
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
