@@ -200,7 +200,7 @@ export default {
       this.temp = {
         name: undefined,
         introduction: undefined,
-        roles: undefined
+        roles: []
       }
     },
     handleCreate() {
