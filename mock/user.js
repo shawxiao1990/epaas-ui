@@ -80,5 +80,60 @@ module.exports = [
         data: 'success'
       }
     }
+  },
+  // get all user info
+  {
+    url: '/vue-admin-template/userList/info\.*',
+    type: 'get',
+    response: config => {
+      const { token } = config.query
+      if (token === tokens.admin.token) {
+        return {
+          code: 20000,
+          data: users
+        }
+      } else {
+        return {
+          code: 50008,
+          message: 'you have no right to get all user details.'
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-admin-template/user/create\.*',
+    type: 'post',
+    response: config => {
+      const { token } = config.query
+      if (token === tokens.admin.token) {
+        return {
+          code: 20000,
+          data: 'success'
+        }
+      } else {
+        return {
+          code: 50008,
+          message: 'you have no right to create user'
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-admin-template/user/update\.*',
+    type: 'post',
+    response: config => {
+      const { token } = config.query
+      if (token === tokens.admin.token) {
+        return {
+          code: 20000,
+          data: 'success'
+        }
+      } else {
+        return {
+          code: 50008,
+          message: 'you have no right to update user'
+        }
+      }
+    }
   }
 ]

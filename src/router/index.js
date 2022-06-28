@@ -215,11 +215,11 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'PagePermission',
+        path: 'account',
+        component: () => import('@/views/permission/account'),
+        name: 'AccountPermission',
         meta: {
-          title: 'Page Permission',
+          title: 'Account Permission',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },

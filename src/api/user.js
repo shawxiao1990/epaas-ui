@@ -22,3 +22,28 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getAllInfo(token) {
+  return request({
+    url: '/vue-admin-template/userList/info',
+    method: 'get',
+    params: { token }
+  })
+}
+
+export function createUser(token, data) {
+  return request({
+    url: '/vue-admin-template/user/create',
+    method: 'post',
+    params: { token },
+    data
+  })
+}
+export function updateUser(token, data) {
+  return request({
+    url: '/vue-admin-template/user/update',
+    method: 'post',
+    params: { token },
+    data
+  })
+}
