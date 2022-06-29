@@ -1,13 +1,15 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import { getRoles } from '@/api/role'
 
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  allRoles: []
 }
 
 const mutations = {
@@ -25,6 +27,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  GET_ALL_ROLES: (state, roles) => {
+    state.allRoles = roles
   }
 }
 
@@ -120,6 +125,17 @@ const actions = {
 
     // reset visited views and cached views
     dispatch('tagsView/delAllViews', null, { root: true })
+  },
+  getAllRoles({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      getRoles().then(response => {
+        const { data } = response
+        commit('GET_ALL_ROLES', data)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

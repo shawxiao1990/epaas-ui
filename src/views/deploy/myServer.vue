@@ -33,6 +33,17 @@
           <span>{{ row.servername }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="Permission" prop="roles" align="center" width="200">
+        <template slot-scope="{row}">
+          <div v-for="element in row.roles" :key="element">
+            <span>
+              <el-tag>
+                {{ element }}
+              </el-tag>
+            </span>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="Endpoint" prop="endpoint" align="center" width="200">
         <template slot-scope="{row}">
           <span class="link-type" @click="handleEndpoint(row)">
@@ -76,6 +87,19 @@
         <el-form-item label="Endpoint" prop="endpoint">
           <el-input v-model="temp.endpoint" />
         </el-form-item>
+        <el-form-item label="Roles" prop="roles">
+          <div v-for="index in temp.roles.length" :key="index">
+            <el-tag v-model="temp.roles[index-1]" closable @close="handleDeleteRole(index-1)">
+              {{ temp.roles[index-1] }}
+            </el-tag>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="tmpRole" placeholder="选择一个角色" style="width:100%;">
+            <el-option v-for="item in allRoles" :key="item.key" :value="item.name" />
+          </el-select>
+          <el-button @click="handleAddRole(tmpRole)">添加角色</el-button>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -110,6 +134,8 @@ export default {
       total: 0,
       listLoading: true,
       myName: '',
+      allRoles: [],
+      tmpRole: null,
       listQuery: {
         page: 1,
         limit: 20,
@@ -120,9 +146,7 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
-        servername: undefined,
-        serverip: undefined,
-        endpoint: undefined
+        roles: []
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -139,6 +163,7 @@ export default {
   created() {
     this.myName = store.getters.name
     this.getList()
+    this.allRoles = store.getters.allRoles
   },
   methods: {
     getList() {
@@ -148,7 +173,7 @@ export default {
       const { serverip, page = 1, limit = 20, sort } = this.listQuery
       Object.keys(this.endpointObject).forEach(endpoint => {
         Object.keys(this.endpointObject[endpoint].serverList).forEach(serverName => {
-          var resourceObj = { servername: serverName, serverip: this.endpointObject[endpoint].serverList[serverName], endpoint: endpoint }
+          var resourceObj = { servername: serverName, serverip: this.endpointObject[endpoint].serverList[serverName], endpoint: endpoint, roles: this.endpointObject[endpoint].roleList[serverName] }
           this.list.push(resourceObj)
         })
       })
@@ -192,7 +217,8 @@ export default {
       this.temp = {
         servername: undefined,
         serverip: undefined,
-        endpoint: undefined
+        endpoint: undefined,
+        roles: []
       }
     },
     handleCreate() {
@@ -265,6 +291,12 @@ export default {
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
+    },
+    handleAddRole(role) {
+      this.temp.roles.push(role)
+    },
+    handleDeleteRole(role) {
+      this.temp.roles.push(role)
     }
   }
 }

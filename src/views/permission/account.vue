@@ -95,7 +95,6 @@
 
 <script>
 import { getAllInfo, createUser, updateUser } from '@/api/user.js'
-import { getRoles } from '@/api/role.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import store from '@/store'
 
@@ -143,14 +142,9 @@ export default {
     this.myName = store.getters.name
     this.token = store.getters.token
     this.getList(this.token)
-    this.fetchRoles()
+    this.allRoles = store.getters.allRoles
   },
   methods: {
-    fetchRoles() {
-      getRoles().then(response => {
-        this.allRoles = response.data
-      })
-    },
     getList(token) {
       this.listLoading = true
       this.list = []

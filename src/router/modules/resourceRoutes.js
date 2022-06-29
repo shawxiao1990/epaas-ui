@@ -6,21 +6,21 @@ export default function(route) {
     component: Layout,
     redirect: '',
     name: 'Deploy Manage',
-    meta: { title: 'Deploy Manage', icon: 'eye-open', roles: ['admin', 'editor'] },
+    meta: { title: 'Deploy Manage', icon: 'eye-open', roles: ['visitor'] },
     children: [
       {
         path: 'Resource',
         component: () => import('@/views/deploy/index'),
         name: 'Resource Name',
         // redirect: '/DeployManage/Resource/test',
-        meta: { title: 'Resource Name', icon: 'nested', roles: ['admin', 'editor'] },
+        meta: { title: 'Resource Name', icon: 'nested', roles: ['visitor'] },
         children: []
       },
       {
         path: 'ResourceReg',
         name: 'Resource Register',
         component: () => import('@/views/deploy/myServer'),
-        meta: { title: 'Resource Register', icon: 'form', roles: ['admin', 'editor'] }
+        meta: { title: 'Resource Register', icon: 'form', roles: ['visitor'] }
       }
     ]
   }]
@@ -31,12 +31,13 @@ export default function(route) {
       path: endpoint,
       component: () => import('@/views/deploy/endpoint'),
       name: '',
-      meta: { title: '', roles: ['admin', 'editor'] },
+      meta: { title: '', roles: [] },
       children: []
     }
     tmpRoute.path = routeItems[endpoint].path
     tmpRoute.name = routeItems[endpoint].path
     tmpRoute.meta.title = routeItems[endpoint].path
+    tmpRoute.meta.roles = routeItems[endpoint].roles
     // console.log(tmpRoute)
     // tmpRoute.children = element.serverList
     Object.keys(routeItems[endpoint].serverList).forEach(serverName => {
@@ -44,11 +45,12 @@ export default function(route) {
         path: '',
         component: () => import('@/views/deploy/resource'),
         name: '',
-        meta: { title: '', roles: ['admin', 'editor'] }
+        meta: { title: '', roles: [] }
       }
       tmpChildrenRoute.path = serverName
       tmpChildrenRoute.name = serverName
       tmpChildrenRoute.meta.title = serverName
+      tmpChildrenRoute.meta.roles = routeItems[endpoint].roleList[serverName]
       tmpRoute.children.push(tmpChildrenRoute)
     })
     resourceRoutes[0].children[0].children.push(tmpRoute)

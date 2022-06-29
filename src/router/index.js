@@ -211,7 +211,7 @@ export const asyncRoutes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['admin'] // you can set roles in root nav
     },
     children: [
       {
@@ -221,15 +221,6 @@ export const asyncRoutes = [
         meta: {
           title: 'Account Permission',
           roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'DirectivePermission',
-        meta: {
-          title: 'Directive Permission'
-          // if do not set roles, means: this page does not require permission
         }
       },
       {

@@ -37,6 +37,8 @@ router.beforeEach(async(to, from, next) => {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
           const { roles } = await store.dispatch('user/getInfo')
+          // get all roles
+          await store.dispatch('user/getAllRoles')
           // get route path from db
           await store.dispatch('routes/getRoutes')
           // generate routes object
