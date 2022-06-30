@@ -81,6 +81,8 @@ export default {
               this.yAxisData[element].shift()
             })
           }
+        } else {
+          this.setOption([0], { loading: 0 })
         }
       }
     }

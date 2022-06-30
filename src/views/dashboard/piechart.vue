@@ -45,12 +45,15 @@ export default {
   watch: {
     metricItem: {
       handler: function(val, oldVal) {
+        console.log(val)
         if (Object.keys(val)[0] && this.chart) {
           this.item = Object.keys(val)[0]
           this.Usage = val[Object.keys(val)[0]].Usage
           this.Totle = val[Object.keys(val)[0]].Totle
           this.Perc = Math.round((this.Usage / this.Totle) * 100)
           this.setOptions(this.item, this.Perc)
+        } else if (this.chart) {
+          this.setOptions('loading', 0)
         }
       },
       immediate: true

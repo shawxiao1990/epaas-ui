@@ -1,7 +1,7 @@
 const Mock = require('mockjs')
 
 const trafficData = Mock.mock({
-  items: [{
+  '192.168.1.2': [{
     id: '@increment',
     'timestamp|+1000': +Mock.Random.date('T'),
     value: {
@@ -11,7 +11,7 @@ const trafficData = Mock.mock({
   }]
 })
 const data = Mock.mock({
-  item: [
+  '192.168.1.2': [
     {
       memMetric: {
         Usage: +Mock.Random.integer(0, 96),
@@ -35,7 +35,8 @@ module.exports = [
     type: 'get',
     response: config => {
       // const metricItem = config.query
-      const items = data.item
+      const { IP } = config.query
+      const items = data[IP]
       return {
         code: 20000,
         data: items
@@ -47,7 +48,8 @@ module.exports = [
     type: 'get',
     response: config => {
       // const metricItem = config.query
-      const items = trafficData.items
+      const { IP } = config.query
+      const items = trafficData[IP]
       return {
         code: 20000,
         data: items

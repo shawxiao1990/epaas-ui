@@ -1,5 +1,8 @@
 <template>
   <div class="dashboard-container">
+    <el-select v-model="filterText" clearable filterable default-first-option placeholder="please type your IP for search" style="width:100%;" @change="handleFilter">
+      <el-option v-for="item in IPlist" :key="item.id" :value="item" />
+    </el-select>
     <div class="dashboard-text" style="border-bottom: 1px solid #ececec">STATUS</div>
     <el-row :gutter="40">
       <el-col v-for="(item,index) of mymetric" :key="index" :span="6" :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
@@ -17,6 +20,7 @@ import { mapGetters } from 'vuex'
 import piechart from './piechart.vue'
 import lineChart from './LineMarker'
 import { fetchData, fetchDataTraffic } from '@/api/server-data'
+import store from '@/store'
 
 export default {
   name: 'Dashboard',
@@ -30,7 +34,10 @@ export default {
       dataLoading: false,
       metric: [],
       mymetric: [{}, {}],
-      trafficMetric: []
+      trafficMetric: [],
+      filterText: '',
+      IPlist: [],
+      myRoles: []
     }
   },
   computed: {
@@ -55,20 +62,46 @@ export default {
   },
   created() {
     // this.getData()
-    this.timer = setInterval(() => {
-      setTimeout(this.getData, 0)
-      setTimeout(this.getDataTraffic, 0)
-    }, 10000)
+    this.myRoles = store.getters.roles
+    this.getIPList(this.myRoles)
+    // this.timer = setInterval(() => {
+    //   setTimeout(this.getData, 0)
+    //   setTimeout(this.getDataTraffic, 0)
+    // }, 10000)
   },
   destroyed() {
     clearInterval(this.timer)
     this.timer = null
   },
   methods: {
+    resetMetric() {
+      this.metric = [{}, {}]
+      this.trafficMetric = []
+    },
+    handleFilter() {
+      console.log(this.filterText)
+      this.resetMetric()
+      this.timer = setInterval(() => {
+        setTimeout(this.getData, 0)
+        setTimeout(this.getDataTraffic, 0)
+      }, 10000)
+    },
+    getIPList(roles) {
+      this.endpointObject = store.getters.routes
+      Object.keys(this.endpointObject).forEach(endpoint => {
+        Object.keys(this.endpointObject[endpoint].serverList).forEach(serverName => {
+          var resourceObj = { servername: serverName, serverip: this.endpointObject[endpoint].serverList[serverName], endpoint: endpoint, roles: this.endpointObject[endpoint].roleList[serverName] }
+          if (!roles.some(role => resourceObj.roles.includes(role))) {
+            return
+          }
+          this.IPlist.push(resourceObj.serverip)
+        })
+      })
+    },
     getData() {
       this.dataLoading = true
       return new Promise((resolve, reject) => {
-        fetchData().then(response => {
+        fetchData(this.filterText).then(response => {
           this.metric = response.data
           this.dataLoading = false
           resolve(true)
@@ -80,7 +113,7 @@ export default {
     getDataTraffic() {
       this.dataLoading = true
       return new Promise((resolve, reject) => {
-        fetchDataTraffic().then(response => {
+        fetchDataTraffic(this.filterText).then(response => {
           this.trafficMetric = response.data
           this.dataLoading = false
           resolve(true)
