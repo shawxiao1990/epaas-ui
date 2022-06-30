@@ -42,7 +42,7 @@ router.beforeEach(async(to, from, next) => {
           // get route path from db
           await store.dispatch('routes/getRoutes')
           // generate routes object
-          const addResourceRoutes = resourceRoutes()
+          const addResourceRoutes = resourceRoutes(roles)
           // generate sidebar
           await store.dispatch('permission/addRoutes', { roles, addResourceRoutes })
           // generate accessible routes map based on roles

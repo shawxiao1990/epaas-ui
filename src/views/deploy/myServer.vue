@@ -135,6 +135,7 @@ export default {
       listLoading: true,
       myName: '',
       allRoles: [],
+      myRoles: [],
       tmpRole: null,
       listQuery: {
         page: 1,
@@ -162,6 +163,7 @@ export default {
   },
   created() {
     this.myName = store.getters.name
+    this.myRoles = store.getters.roles
     this.getList()
     this.allRoles = store.getters.allRoles
   },
@@ -179,7 +181,10 @@ export default {
       })
       this.list = this.list.filter(item => {
         if (serverip && item.serverip.indexOf(serverip) < 0) return false
-        return true
+        const hasPermission = item.roles.some(role => {
+          return this.myRoles.includes(role)
+        })
+        return hasPermission
       })
       if (sort === '-id') {
         this.list = this.list.reverse()

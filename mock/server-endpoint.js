@@ -9,7 +9,7 @@ for (let i = 0; i < count; i++) {
     [endpoint]: {
       id: '@increment',
       path: endpoint,
-      roles: [],
+      roles: ['admin'],
       serverList: {
         [servername1]: /[1-9]{3}\.[1-9]{3}\.[1-9]{3}\.[1-9]{3}/,
         [servername2]: /[1-9]{3}\.[1-9]{3}\.[1-9]{3}\.[1-9]{3}/
@@ -28,13 +28,13 @@ const endpoint = Mock.mock({
     'test1': {
       id: '@increment',
       path: 'test1',
-      roles: ['admin'],
+      roles: ['editor'],
       serverList: {
         server1: '192.168.1.1',
         server2: '192.168.1.2'
       },
       roleList: {
-        server1: ['admin'],
+        server1: ['editor'],
         server2: ['admin']
       }
     },

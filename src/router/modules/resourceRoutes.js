@@ -1,6 +1,6 @@
 import store from '@/store'
 import Layout from '@/layout'
-export default function(route) {
+export default function(roles) {
   var resourceRoutes = [{
     path: '/DeployManage',
     component: Layout,
@@ -24,6 +24,9 @@ export default function(route) {
       }
     ]
   }]
+  var myRoles = roles
+  // default my role visitor
+  myRoles.push('visitor')
   var routeItems = store.getters.routes
   // console.log('routeItems', routeItems)
   Object.keys(routeItems).forEach(endpoint => {
@@ -38,6 +41,10 @@ export default function(route) {
     tmpRoute.name = routeItems[endpoint].path
     tmpRoute.meta.title = routeItems[endpoint].path
     tmpRoute.meta.roles = routeItems[endpoint].roles
+    // add routes base on my role
+    if (!myRoles.some(role => tmpRoute.meta.roles.includes(role))) {
+      return
+    }
     // console.log(tmpRoute)
     // tmpRoute.children = element.serverList
     Object.keys(routeItems[endpoint].serverList).forEach(serverName => {
@@ -51,6 +58,10 @@ export default function(route) {
       tmpChildrenRoute.name = serverName
       tmpChildrenRoute.meta.title = serverName
       tmpChildrenRoute.meta.roles = routeItems[endpoint].roleList[serverName]
+      // add routes base on my role
+      if (!myRoles.some(role => tmpChildrenRoute.meta.roles.includes(role))) {
+        return
+      }
       tmpRoute.children.push(tmpChildrenRoute)
     })
     resourceRoutes[0].children[0].children.push(tmpRoute)

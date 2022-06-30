@@ -66,6 +66,7 @@ const actions = {
   addRoutes({ commit }, param) {
     return new Promise(resolve => {
       let accessedRoutes
+      // give all user with visitor role
       param.roles.push('visitor')
       if (param.roles.includes('admin')) {
         accessedRoutes = param.addResourceRoutes || []

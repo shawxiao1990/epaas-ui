@@ -1,16 +1,16 @@
 import request from '@/utils/request'
 
-export function fetchData(params) {
+export function fetchData(IP) {
   return request({
     url: '/epaas/server/data',
     method: 'get',
-    params
+    params: IP
   })
 }
-export function fetchDataTraffic(params) {
+export function fetchDataTraffic(IP) {
   return request({
     url: '/epaas/server/traffic',
     method: 'get',
-    params
+    params: IP
   })
 }
