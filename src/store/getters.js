@@ -10,6 +10,7 @@ const getters = {
   roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,
   appForm: state => state.publishapp.appForm,
+  yamlFile: state => state.publishapp.yamlFile,
   routes: state => state.routes.routes,
   allRoles: state => state.user.allRoles
 }

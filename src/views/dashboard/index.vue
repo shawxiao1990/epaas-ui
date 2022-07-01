@@ -79,7 +79,6 @@ export default {
       this.trafficMetric = []
     },
     handleFilter() {
-      console.log(this.filterText)
       this.resetMetric()
       this.timer = setInterval(() => {
         setTimeout(this.getData, 0)

@@ -45,7 +45,6 @@ export default {
   watch: {
     metricItem: {
       handler: function(val, oldVal) {
-        console.log(val)
         if (Object.keys(val)[0] && this.chart) {
           this.item = Object.keys(val)[0]
           this.Usage = val[Object.keys(val)[0]].Usage

@@ -101,6 +101,21 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-upload
+          ref="upload"
+          action
+          :accept="acceptFileType"
+          :limit="1"
+          :on-exceed="handleExceed"
+          :before-upload="beforeUpload"
+          :on-change="handleUpload"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :file-list="fileList"
+          :auto-upload="false"
+        >
+          <el-button v-show="dialogStatus==='create'" slot="trigger" @click="dialogFormVisible = false">Upload Yaml</el-button>
+        </el-upload>
         <el-button @click="dialogFormVisible = false">
           Cancel
         </el-button>
@@ -144,6 +159,8 @@ export default {
       total: 0,
       listLoading: true,
       myName: '',
+      fileList: [],
+      acceptFileType: '.yml, .yaml',
       listQuery: {
         page: 1,
         limit: 20,
@@ -305,6 +322,62 @@ export default {
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning('只能选择1个文件!')
+    },
+
+    handleRemove(file, fileList) {
+      // console.log(file,fileList);
+    },
+    handlePreview(file) {
+      // console.log(file);
+    },
+    beforeUpload(file) {
+      var that = this
+      // 文件类型
+      var fileName = file.name.substring(file.name.lastIndexOf('.') + 1)
+      if (fileName !== 'yml') {
+        that.$message({
+          type: 'error',
+          showClose: true,
+          duration: 3000,
+          message: '文件类型不是.yml文件!'
+        })
+        return false
+      }
+      // 读取文件大小
+      var fileSize = file.size
+      console.log(fileSize)
+      if (fileSize > 2097152) {
+        that.$message({
+          type: 'error',
+          showClose: true,
+          duration: 3000,
+          message: '文件大于2M!'
+        })
+        return false
+      }
+    },
+    handleUpload(file) {
+      const reader = new FileReader()
+      if (typeof FileReader === 'undefined') {
+        alert('您的浏览器不支持FileReader接口')
+      }
+      // reader.readAsText(file, 'UTF-8') // 注意读取中文的是用这个编码，是utf-8
+
+      if (file) {
+        reader.readAsText(file.raw, 'UTF-8')
+      }
+      reader.onload = () => {
+        // console.log('reader.result:', reader.result)
+        this.$store.dispatch('publishapp/readYAMl', reader.result)
+      }
+      // setTimeout(() => {
+      //   console.log('reader.result:', reader.result)
+      // }, 1000)
+      this.$router.push({ path: '/ApplicationMarket/yamledit' })
+      return false
     }
   }
 }

@@ -63,6 +63,7 @@ export default {
 .yaml-editor >>> .CodeMirror {
   height: auto;
   min-height: 300px;
+  line-height:21px;
 }
 .yaml-editor >>> .CodeMirror-scroll{
   min-height: 300px;

@@ -38,6 +38,7 @@
 <script >
 import { getList } from '@/api/imagelist'
 import scrollLoadMore from '@/directive/el-select/index'
+import store from '@/store'
 export default {
   directives: { scrollLoadMore },
   data() {
@@ -78,6 +79,8 @@ export default {
   },
   created() {
     this.fetchData()
+    this.postForm.imagename = store.getters.appForm.docker_images
+    console.log('bbb', this.postForm.imagename)
   },
   methods: {
     remoteMethod(query) {
