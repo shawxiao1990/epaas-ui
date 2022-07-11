@@ -26,10 +26,10 @@ const users = {
 module.exports = [
   // user login
   {
-    url: '/vue-admin-template/user/login',
+    url: '/v1/oauth/token',
     type: 'post',
     response: config => {
-      const { username } = config.body
+      const { username } = config.query
       const token = tokens[username]
 
       // mock error
@@ -49,7 +49,7 @@ module.exports = [
 
   // get user info
   {
-    url: '/vue-admin-template/user/info\.*',
+    url: '/v1/user\.*',
     type: 'get',
     response: config => {
       const { token } = config.query

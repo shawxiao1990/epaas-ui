@@ -38,7 +38,7 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ username: username.trim(), password: password, grant_type: 'password' }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -58,7 +58,9 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
+        if (!Array.isArray(data.roles)) { // string to array
+          data.roles = data.roles.split(',')
+        }
         const { roles, name, avatar, introduction } = data
 
         // roles must be a non-empty array
