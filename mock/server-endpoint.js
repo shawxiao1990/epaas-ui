@@ -55,7 +55,7 @@ const endpoint = Mock.mock({
 })
 module.exports = [
   {
-    url: '/epaas/server/endpoint',
+    url: '/v1/server/endpoint',
     type: 'get',
     response: config => {
       const items = endpoint.items
