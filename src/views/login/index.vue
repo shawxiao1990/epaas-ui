@@ -74,8 +74,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'helloflask'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
