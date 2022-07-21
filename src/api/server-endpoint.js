@@ -8,10 +8,17 @@ export function fetchData(params) {
   })
 }
 export function createServer(data) {
+  const post_data = Object.assign({}, data) // copy obj
+  post_data.roles = data.roles.join(',')
+  console.log(data)
+  console.log(post_data)
   return request({
-    url: '/epaas/server/create',
+    url: '/v1/server/create',
     method: 'post',
-    data
+    data: post_data,
+    headers: {
+      'Content-Type': 'text/plain'
+    }
   })
 }
 export function updateServer(data) {
