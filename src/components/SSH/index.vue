@@ -1,11 +1,12 @@
 <template>
-  <div ref="xterm" class="terminal" :style="styleVar" />
+  <div id="xterm" class="xterm" />
 </template>
 
 <script>
 import 'xterm/css/xterm.css'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
+import { AttachAddon } from 'xterm-addon-attach'
 
 export default {
   name: 'Xterm',
@@ -14,80 +15,78 @@ export default {
       type: String,
       default: null
     }, // 通过父组件传递登录ip
-    height: {
-      type: Number, // xterm显示屏幕，高度
-      default: 100
+    socketURI: {
+      type: String,
+      default: 'ws://' + process.env.VUE_APP_BACKEND_SOCKET + '/api/v1/server/socket'
     }
   },
-  data() {
-    return {
-      term: null,
-      socket: null
-    }
-  },
-  computed: { // 动态设置xterm显示屏幕高度
-    styleVar() {
-      return {
-        '--terminal-height': this.height + 'vh'
-      }
-    }
-  },
-  mounted() { // 初始化链接
-    this.init()
+  mounted() {
     this.initSocket()
   },
-  beforeDestroy() { // 退出销毁链接
+  beforeDestroy() {
     this.socket.close()
-    this.term.dispose()
+    this.term && this.term.dispose()
   },
   methods: {
-    init() { // 初始化Terminal
-      this.term = new Terminal({
-        fontSize: 18,
-        convertEol: true, // 启用时，光标将设置为下一行的开头
+    initTerm() {
+      const term = new Terminal({
         rendererType: 'canvas', // 渲染类型
-        cursorBlink: true, // 光标闪烁
-        cursorStyle: 'bar', // 光标样式 underline
-        theme: {
-          background: '#060101', // 背景色
-          cursor: 'help' // 设置光标
-        }
+        // rows: 100, // 行数
+        // cols: 100, // 不指定行数，自动回车后光标从下一行开始
+        convertEol: true, // 启用时，光标将设置为下一行的开头
+        //   scrollback: 50, //终端中的回滚量
+        disableStdin: false, // 是否应禁用输入。
+        windowsMode: true, // 根据窗口换行
+        cursorStyle: 'underline', // 光标样式
+        cursorBlink: true // 光标闪烁
+        // theme: {
+        //   foreground: '#7e9192', // 字体
+        //   background: '#002833', // 背景色
+        //   cursor: 'help', // 设置光标
+        //   lineHeight: 16
+        // }
       })
+      this.term = term
+      const attachAddon = new AttachAddon(this.socket)
+      const fitAddon = new FitAddon()
+      this.term.loadAddon(attachAddon)
+      this.term.loadAddon(fitAddon)
+      this.fitAddon = fitAddon
+      const element = document.getElementById('xterm')
+      this.term.open(element)
+      // 自适应大小(使终端的尺寸和几何尺寸适合于终端容器的尺寸)，初始化的时候宽高都是对的
+      fitAddon.fit()
+      this.term.focus()
     },
-    initSocket() { // 初始化Websocket
-      const fitPlugin = new FitAddon()
-      this.term.loadAddon(fitPlugin)
-
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      this.socket = new WebSocket(`${protocol}//${window.location.host}/socket/ws/ssh/${this.ip}`)
-
-      this.socket.onmessage = e => {
-        const reader = new window.FileReader()
-        reader.onload = () => this.term.write(reader.result)
-        reader.readAsText(e.data, 'utf-8')
+    initSocket() {
+      if (this.socketURI === '') {
+        return
       }
-
+      this.socket = new WebSocket(this.socketURI)
+      this.socketOnClose()
+      this.socketOnOpen()
+      this.socketOnError()
+    },
+    socketOnOpen() {
       this.socket.onopen = () => {
-        this.term.open(this.$refs.xterm)
-        this.term.focus()
-        fitPlugin.fit()
+        console.log('web链接成功')
+        // 链接成功后
+        this.initTerm()
       }
-
-      this.socket.onclose = e => {
-        if (e.code === 1234) { // 结束标记
-          window.location.href = 'about:blank'
-          window.close()
-        } else {
-          setTimeout(() => this.term.write('\r\nConnection is closed.\r\n'), 200)
-        }
+    },
+    socketOnClose() {
+      this.socket.onclose = () => {
+        this.socket.close()
+        console.log('关闭 socket')
+        // if (this.socket) {
+        //   this.socket.close();
+        // }
       }
-
-      this.term.onData(data => this.socket.send(JSON.stringify({ data })))
-      this.term.onResize(({ cols, rows }) => {
-        this.socket.send(JSON.stringify({ resize: [cols, rows] }))
-      })
-
-      window.onresize = () => fitPlugin.fit()
+    },
+    socketOnError() {
+      this.socket.onerror = () => {
+        console.log('socket 链接失败')
+      }
     }
   }
 }
