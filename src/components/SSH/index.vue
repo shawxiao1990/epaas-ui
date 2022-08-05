@@ -7,6 +7,7 @@ import 'xterm/css/xterm.css'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { AttachAddon } from 'xterm-addon-attach'
+import store from '@/store'
 
 export default {
   name: 'Xterm',
@@ -62,7 +63,7 @@ export default {
       if (this.socketURI === '') {
         return
       }
-      this.socket = new WebSocket(this.socketURI)
+      this.socket = new WebSocket(this.socketURI + '/' + store.getters.token + '/' + this.ip)
       this.socketOnClose()
       this.socketOnOpen()
       this.socketOnError()

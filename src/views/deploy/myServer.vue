@@ -84,6 +84,12 @@
         <el-form-item label="HOST NAME" prop="servername">
           <el-input v-model="temp.servername" />
         </el-form-item>
+        <el-form-item label="SSH user" prop="username">
+          <el-input v-model="temp.ssh_user" />
+        </el-form-item>
+        <el-form-item label="SSH password" prop="password">
+          <el-input v-model="temp.password" />
+        </el-form-item>
         <el-form-item label="Endpoint" prop="endpoint">
           <el-input v-model="temp.endpoint" />
         </el-form-item>
@@ -120,6 +126,7 @@ import { createServer, updateServer } from '@/api/server-endpoint'
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import store from '@/store'
+import crypto from '@/utils/crypto'
 
 export default {
   name: 'ComplexTable',
@@ -237,6 +244,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.temp.password = crypto.encrypt(this.temp.password)
           createServer(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
