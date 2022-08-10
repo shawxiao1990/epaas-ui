@@ -37,9 +37,14 @@ module.exports = {
       errors: true
     },
     proxy: { // 外部接口配置代理，解决跨域
-      '/api/': {
+      '/api/v1': {
         'target': 'http://127.0.0.1:5000', // 接口地址
         'secure': false, // false为http访问，true为https访问
+        'changeOrigin': true // 跨域访问设置，true代表跨域
+      },
+      '/api/repositories': {
+        'target': 'https://harbor.emotibot.com', // 接口地址
+        'secure': true, // false为http访问，true为https访问
         'changeOrigin': true // 跨域访问设置，true代表跨域
       }
     },

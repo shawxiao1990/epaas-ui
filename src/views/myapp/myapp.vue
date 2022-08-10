@@ -92,8 +92,12 @@
           </el-select>
         </el-form-item>
         <div v-for="index of docker_images_count" :key="index">
-          <el-form-item :label="'docker_images'+(index)">
+          <el-form-item :label="Object.keys(temp.module_env)[index-1]">
             <el-input v-model="temp.docker_images[index-1]" />
+            <div v-for="env_key in Object.keys(temp.module_env[Object.keys(temp.module_env)[index-1]])" :key="env_key" class="box">
+              <div class="column key">{{ env_key }} =</div>
+              <el-input v-model="temp.module_env[Object.keys(temp.module_env)[index-1]][env_key]" type="textarea" class="column value" />
+            </div>
           </el-form-item>
         </div>
         <el-form-item label="Remark">
@@ -382,3 +386,16 @@ export default {
   }
 }
 </script>
+<style scoped>
+.box {
+  display: flex;
+  flex-wrap: wrap;
+
+}
+.column.key {
+  flex: 0 0 20%;
+}
+.column.value {
+  flex: 0 0 80%;
+}
+</style>

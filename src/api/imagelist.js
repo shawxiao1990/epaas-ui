@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getList(params) {
   return request({
-    url: '/epaas/image/list',
+    url: '/repositories',
     method: 'get',
     params
   })

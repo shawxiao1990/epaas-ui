@@ -36,7 +36,7 @@ const data = Mock.mock({
 
 module.exports = [
   {
-    url: '/epaas/image/list',
+    url: '/repositories',
     type: 'get',
     response: config => {
       const items = data.items.concat(data.items2)

@@ -15,7 +15,8 @@ const data = Mock.mock({
     reviewer: '@first',
     description: '@sentence(1, 10)',
     display_time: '@datetime',
-    'docker_images|2': [/harbor\.emotibot\.com\/[a-z]{4}\/[a-z]{5}:[0-9]{5}/]
+    'docker_images|2': [/harbor\.emotibot\.com\/[a-z]{4}\/[a-z]{5}:[0-9]{5}/],
+    module_env: { 'test-module1': { 'aaa': 'bbb', 'ccc': 'ddd' }, 'test-module2': { 'eee': 'fff', 'ggg': 'hhh' }}
   }]
 })
 

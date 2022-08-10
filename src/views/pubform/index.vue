@@ -20,6 +20,9 @@
             <el-option v-for="item in loadedImageList" :key="item.id" :value="item.registry+'/'+item.repo+'/'+item.imagename+'/'+item.imagetag" />
           </el-select>
         </el-form-item>
+        <el-form-item label="Module ENV" :prop="'module_env.'+(index-1)">
+          <el-input v-model="postForm.module_env[index-1]" type="textarea" :placeholder="'key1=value1\nkey2=value2'" />
+        </el-form-item>
       </div>
     </el-form>
     <el-form :model="postForm" label-width="120px">
@@ -62,6 +65,7 @@ export default {
         appname: '',
         modulename: [''],
         imagename: [''],
+        module_env: [''],
         db: []
       },
       db: ['mysql', 'redis'],
@@ -79,8 +83,9 @@ export default {
   },
   created() {
     this.fetchData()
-    this.postForm.imagename = store.getters.appForm.docker_images
-    console.log('bbb', this.postForm.imagename)
+    if (store.getters.appForm.docker_images !== undefined) {
+      this.postForm.imagename = store.getters.appForm.docker_images
+    }
   },
   methods: {
     remoteMethod(query) {
