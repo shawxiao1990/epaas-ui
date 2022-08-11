@@ -12,18 +12,20 @@
       <el-button style="float: right; padding: 3px 0" type="text" @click="handleDetails(list.id)">Details</el-button>
     </el-card>
     <card-details :visible="dialogFormVisible" :list="list" @closeDetails="closeDetails" />
-    <app-deploy :visible="dialogDeployFormVisible" :list="list" @closeDetails="closeDeploy" />
+    <app-deploy :visible="dialogDeployFormVisible" :list="list" @closeDetails="closeDeploy" @confirmDeploy="confirmDeploy" />
+    <PROGRESS :visible="dialoProgressFormVisible" :serverip="serverip" :appname="appname" @closeProgress="closeProgress" />
   </div>
 </template>
 
 <script>
 import CardDetails from './CardDetails.vue'
 import AppDeploy from './AppDeploy.vue'
+import PROGRESS from '@/views/deploy/progress'
 import { parseTime } from '@/utils'
 
 export default {
   name: 'App',
-  components: { CardDetails, AppDeploy },
+  components: { CardDetails, AppDeploy, PROGRESS },
   filters: {
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)
@@ -38,7 +40,10 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      dialogDeployFormVisible: false
+      dialogDeployFormVisible: false,
+      dialoProgressFormVisible: false,
+      appname: null,
+      serverip: null
     }
   },
   methods: {
@@ -53,6 +58,17 @@ export default {
     },
     closeDeploy(flag) {
       this.dialogDeployFormVisible = false
+    },
+    handleProgress(id) {
+      this.dialoProgressFormVisible = true
+    },
+    closeProgress(flag) {
+      this.dialoProgressFormVisible = false
+    },
+    confirmDeploy(appname, serverip) {
+      this.appname = appname
+      this.serverip = serverip
+      this.dialoProgressFormVisible = true
     }
   }
 }

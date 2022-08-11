@@ -79,6 +79,8 @@ export default {
     },
     deploy() {
       this.deploying = true
+      this.$emit('confirmDeploy', this.list.title, this.serverip)
+      this.handleCancle()
     }
   }
 }
