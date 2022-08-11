@@ -1,5 +1,5 @@
 const state = {
-  appForm: {},
+  appForm: null,
   yamlFile: null
 }
 const mutations = {

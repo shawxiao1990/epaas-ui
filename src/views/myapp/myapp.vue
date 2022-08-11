@@ -8,9 +8,24 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <!-- <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         Add
-      </el-button>
+      </el-button> -->
+      <el-upload
+        ref="upload"
+        action
+        :accept="acceptFileType"
+        :limit="1"
+        :on-exceed="handleExceed"
+        :before-upload="beforeUpload"
+        :on-change="handleUpload"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :file-list="fileList"
+        :auto-upload="false"
+      >
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">Upload Yaml</el-button>
+      </el-upload>
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         reviewer
       </el-checkbox>
@@ -397,5 +412,11 @@ export default {
 }
 .column.value {
   flex: 0 0 80%;
+}
+.filter-container {
+  display: flex;
+}
+.filter-item {
+flex: 0 0 10%;
 }
 </style>

@@ -63,9 +63,9 @@ export default {
       },
       postForm: {
         appname: '',
-        modulename: [''],
-        imagename: [''],
-        module_env: [''],
+        modulename: [],
+        imagename: [],
+        module_env: [],
         db: []
       },
       db: ['mysql', 'redis'],
@@ -83,8 +83,9 @@ export default {
   },
   created() {
     this.fetchData()
-    if (store.getters.appForm.docker_images !== undefined) {
-      this.postForm.imagename = store.getters.appForm.docker_images
+    if (store.getters.appForm !== null) {
+      this.postForm = store.getters.appForm
+      this.count = this.postForm.modulename.length
     }
   },
   methods: {
@@ -144,14 +145,16 @@ export default {
       })
     },
     onIncrement() {
-      this.count++
-      this.postForm.imagename.push('')
+      // this.count++
+      // this.postForm.imagename.push('')
       this.postForm.modulename.push('')
+      this.count = this.postForm.modulename.length
     },
     onDecrement() {
-      this.count--
+      // this.count--
       this.postForm.modulename.pop()
-      this.postForm.imagename.pop('')
+      // this.postForm.imagename.pop('')
+      this.count = this.postForm.modulename.length
     },
     onCancel() {
       this.$message({

@@ -46,7 +46,11 @@ export default {
     }
     return {
       postForm: {
-        docker_images: []
+        appname: '',
+        modulename: [],
+        imagename: [],
+        module_env: [],
+        db: []
       },
       yamlForm: {
         yamlData: ''
@@ -78,7 +82,19 @@ export default {
           this.loading = true
           this.yamlJSONs.forEach(json => {
             Object.keys(json.services).forEach(service => {
-              this.postForm.docker_images.push(json.services[service].image)
+              this.postForm.modulename.push(service)
+              this.postForm.imagename.push(json.services[service].image)
+              console.log(json.services[service].environment)
+              // 对yaml文件中环境变量的书写格式进行判断是数组或者对象
+              if (typeof json.services[service].environment.length === 'number') {
+                this.postForm.module_env.push(json.services[service].environment.join('\n'))
+              } else {
+                const tmpArray = []
+                Object.keys(json.services[service].environment).forEach(key => {
+                  tmpArray.push([key, json.services[service].environment[key]].join('='))
+                })
+                this.postForm.module_env.push(tmpArray.join('\n'))
+              }
             })
           })
           this.$store.dispatch('publishapp/PushData', this.postForm)
