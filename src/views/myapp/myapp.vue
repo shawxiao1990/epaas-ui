@@ -106,12 +106,12 @@
             <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <div v-for="index of docker_images_count" :key="index">
-          <el-form-item :label="Object.keys(temp.module_env)[index-1]">
-            <el-input v-model="temp.docker_images[index-1]" />
-            <div v-for="env_key in Object.keys(temp.module_env[Object.keys(temp.module_env)[index-1]])" :key="env_key" class="box">
+        <div v-for="(item,index) in temp.modulename" :key="index">
+          <el-form-item :label="item">
+            <el-input v-model="temp.docker_images[index]" />
+            <div v-for="env_key in Object.keys(temp.module_env[index])" :key="env_key" class="box">
               <div class="column key">{{ env_key }} =</div>
-              <el-input v-model="temp.module_env[Object.keys(temp.module_env)[index-1]][env_key]" type="textarea" class="column value" />
+              <el-input v-model="temp.module_env[index][env_key]" type="textarea" class="column value" />
             </div>
           </el-form-item>
         </div>
@@ -219,6 +219,7 @@ export default {
     getList() {
       this.listLoading = true
       this.listQuery.author = this.myName
+      // applist
       getList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total

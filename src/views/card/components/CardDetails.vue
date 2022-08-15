@@ -10,12 +10,12 @@
       <el-form-item label="Author">
         {{ list.author }}
       </el-form-item>
-      <div v-for="(item,index) in list.docker_images" :key="index">
-        <el-form-item :label="Object.keys(list.module_env)[index]">
+      <div v-for="(item,index) in list.modulename" :key="index">
+        <el-form-item :label="item">
           <el-input v-model="list.docker_images[index]" />
-          <div v-for="env_key in Object.keys(list.module_env[Object.keys(list.module_env)[index]])" :key="env_key" class="box">
+          <div v-for="env_key in Object.keys(list.module_env[index])" :key="env_key" class="box">
             <div class="column key">{{ env_key }} =</div>
-            <el-input v-model="list.module_env[Object.keys(list.module_env)[index]][env_key]" type="textarea" class="column value" />
+            <el-input v-model="list.module_env[index][env_key]" type="textarea" class="column value" />
           </div>
         </el-form-item>
       </div>
@@ -55,8 +55,8 @@ export default {
   //     visibleInner: null
   //   }
   // },
-  // mounted() {
-  //   console.log(this.list)
+  // created() {
+  //   console.log(this.list.module_env[0])
   // },
   methods: {
     handleCancle() {

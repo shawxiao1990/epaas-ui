@@ -64,6 +64,7 @@ const actions = {
           data.roles = data.roles.split(',')
         }
         const { roles, name, avatar, introduction } = data
+        console.log(data)
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {

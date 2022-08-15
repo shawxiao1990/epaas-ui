@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Module ENV" :prop="'module_env.'+(index-1)">
-          <el-input v-model="postForm.module_env[index-1]" type="textarea" :placeholder="'key1=value1\nkey2=value2'" />
+          <el-input v-model="postForm.module_env[index-1]" type="textarea" :placeholder="'{'+'key1'+':'+'value1'+','+'key2'+':'+'value2'+'}'" />
         </el-form-item>
       </div>
     </el-form>
@@ -42,6 +42,7 @@
 import { getList } from '@/api/imagelist'
 import scrollLoadMore from '@/directive/el-select/index'
 import store from '@/store'
+import { createApp } from '@/api/applist'
 export default {
   directives: { scrollLoadMore },
   data() {
@@ -69,6 +70,7 @@ export default {
         db: []
       },
       db: ['mysql', 'redis'],
+      myName: null,
       count: 1,
       imagelist: null,
       filterImageText: null,
@@ -82,10 +84,11 @@ export default {
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
     if (store.getters.appForm !== null) {
       this.postForm = store.getters.appForm
       this.count = this.postForm.modulename.length
+      this.myName = store.getters.name
     }
   },
   methods: {
@@ -130,11 +133,29 @@ export default {
         if (valid) {
           // this.$message('submit!')
           this.$store.dispatch('publishapp/PushData', this.postForm)
-          this.$router.push({ path: '/ApplicationMarket/yamledit' })
+          // this.$router.push({ path: '/ApplicationMarket/yamledit' })
+          this.createData()
         } else {
           console.log('error submit!!')
           return false
         }
+      })
+    },
+    createData() {
+      this.postForm['author'] = this.myName
+      // 字符串转对象
+      const module_env = []
+      this.postForm.module_env.forEach(kv => {
+        module_env.push(JSON.parse(kv))
+      })
+      this.postForm.module_env = module_env
+      createApp(this.postForm).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: 'Created Successfully',
+          type: 'success',
+          duration: 2000
+        })
       })
     },
     fetchData() {

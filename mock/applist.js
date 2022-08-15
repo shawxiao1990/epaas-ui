@@ -16,13 +16,13 @@ const data = Mock.mock({
     description: '@sentence(1, 10)',
     display_time: '@datetime',
     'docker_images|2': [/harbor\.emotibot\.com\/[a-z]{4}\/[a-z]{5}:[0-9]{5}/],
-    module_env: { 'test-module1': { 'aaa': 'bbb', 'ccc': 'ddd' }, 'test-module2': { 'eee': 'fff', 'ggg': 'hhh' }}
+    module_env: [{ 'aaa': 'bbb', 'ccc': 'ddd' }, { 'eee': 'fff', 'ggg': 'hhh' }]
   }]
 })
 
 module.exports = [
   {
-    url: '/epaas/app/list',
+    url: '/v1/app/list',
     type: 'get',
     response: config => {
       const { title, sort, page, limit, author } = config.query
@@ -47,7 +47,7 @@ module.exports = [
   },
 
   {
-    url: '/epaas/app/create',
+    url: '/v1/app/create',
     type: 'post',
     response: _ => {
       return {
@@ -57,7 +57,7 @@ module.exports = [
     }
   },
   {
-    url: '/epaas/app/update',
+    url: '/v1/app/update',
     type: 'post',
     response: _ => {
       return {

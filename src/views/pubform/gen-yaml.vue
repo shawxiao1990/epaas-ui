@@ -15,7 +15,6 @@
 
 <script>
 import YamlEditor from '@/components/YamlEditor/index.vue'
-import { createApp } from '@/api/applist'
 const yaml = require('js-yaml')
 
 export default {
@@ -68,12 +67,6 @@ export default {
     // this.postForm = this.$store.getters.appForm
     this.yamlFile = this.$store.getters.yamlFile
     this.yamlForm.yamlData = this.yamlFile
-    // var count = this.postForm.modulename.length
-    // for (let i = 0; i < count; i++) {
-    //   this.index = i
-    //   var yamltemplate = '\n  ' + this.postForm.modulename[this.index] + ':' + '\n    container_name: ' + this.postForm.modulename[this.index] + '\n    image: ' + this.postForm.imagename[this.index]
-    //   this.yamlForm.yamlData += yamltemplate
-    // }
   },
   methods: {
     submitForm() {
@@ -85,27 +78,26 @@ export default {
               this.postForm.modulename.push(service)
               this.postForm.imagename.push(json.services[service].image)
               console.log(json.services[service].environment)
+              const kv_map = {}
               // 对yaml文件中环境变量的书写格式进行判断是数组或者对象
               if (typeof json.services[service].environment.length === 'number') {
-                this.postForm.module_env.push(json.services[service].environment.join('\n'))
-              } else {
-                const tmpArray = []
-                Object.keys(json.services[service].environment).forEach(key => {
-                  tmpArray.push([key, json.services[service].environment[key]].join('='))
+                json.services[service].environment.forEach(kv_string => {
+                  // 字符串转数组，分割一次
+                  const kv_array = kv_string.split('=', 2)
+                  console.log('kv_array', kv_array)
+                  // 转 kv 对象
+                  kv_map[kv_array[0]] = kv_array[1]
                 })
-                this.postForm.module_env.push(tmpArray.join('\n'))
+              } else {
+                for (const k in json.services[service].environment) {
+                  kv_map[k] = json.services[service].environment[k]
+                }
               }
+              this.postForm.module_env.push(JSON.stringify(kv_map))
+              console.log(service, '  ', this.postForm.module_env)
             })
           })
           this.$store.dispatch('publishapp/PushData', this.postForm)
-          createApp(this.postForm).then(() => {
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
           this.postForm.status = 'published'
           this.loading = false
           // this.$router.push({ path: '/ApplicationMarket/applist' })
