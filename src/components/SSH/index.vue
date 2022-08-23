@@ -19,6 +19,17 @@ export default {
     socketURI: {
       type: String,
       default: 'ws://' + process.env.VUE_APP_BACKEND_SOCKET + '/api/v1/server/socket'
+    },
+    log: {
+      type: Boolean,
+      default: false
+    } // 通过父组件传递执行一次性任务的选项
+  },
+  data() {
+    return {
+      cursorStyle: 'underline',
+      cursorBlink: true,
+      step: 0
     }
   },
   mounted() {
@@ -30,6 +41,10 @@ export default {
   },
   methods: {
     initTerm() {
+      if (this.log === true) {
+        this.cursorStyle = ''
+        this.cursorBlink = false
+      }
       const term = new Terminal({
         rendererType: 'canvas', // 渲染类型
         // rows: 100, // 行数
@@ -38,8 +53,8 @@ export default {
         //   scrollback: 50, //终端中的回滚量
         disableStdin: false, // 是否应禁用输入。
         windowsMode: true, // 根据窗口换行
-        cursorStyle: 'underline', // 光标样式
-        cursorBlink: true // 光标闪烁
+        cursorStyle: this.cursorStyle, // 光标样式
+        cursorBlink: this.cursorBlink // 光标闪烁
         // theme: {
         //   foreground: '#7e9192', // 字体
         //   background: '#002833', // 背景色
@@ -63,10 +78,22 @@ export default {
       if (this.socketURI === '') {
         return
       }
-      this.socket = new WebSocket(this.socketURI + '/' + store.getters.token + '/' + this.ip)
+      this.socket = new WebSocket(this.socketURI + '/' + store.getters.token + '/' + this.ip + '/' + this.log)
+      this.socketOnMessage()
       this.socketOnClose()
       this.socketOnOpen()
       this.socketOnError()
+    },
+    socketOnMessage() {
+      this.socket.onmessage = e => {
+        if (e.data === 'SUCCESS DONE') {
+          this.step = this.step + 1
+        } else if (e.data === 'SUCCESS END DONE') {
+          this.step = this.step + 1
+          this.socketOnClose()
+        }
+        this.$emit('currentStep', this.step)
+      }
     },
     socketOnOpen() {
       this.socket.onopen = () => {

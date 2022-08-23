@@ -13,12 +13,12 @@
       </el-form>
     </div>
     <div style="height: 300px;" class="box margin">
-      <el-steps direction="vertical" :active="1" finish-status="success" align-center>
+      <el-steps direction="vertical" :active="activeStep" finish-status="success" align-center>
         <el-step title="步骤 1" />
         <el-step title="步骤 2" />
         <el-step title="步骤 3" description="这是一段很长很长很长的描述性文字" />
       </el-steps>
-      <SSH :ip="serverip" :height="5" :wight="5" class="item" />
+      <SSH :ip="serverip" :log="true" :height="5" :wight="5" class="item" @currentStep="currentStep" />
     </div>
   </el-dialog>
 </template>
@@ -45,6 +45,11 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      activeStep: 0
+    }
+  },
   computed: {
     visibleInner: {
       get() {
@@ -62,6 +67,9 @@ export default {
       const flag = false
       this.$emit('closeProgress', flag)
       this.visibleInner = false
+    },
+    currentStep(step) {
+      this.activeStep = step
     }
   }
 }

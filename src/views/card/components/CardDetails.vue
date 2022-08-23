@@ -98,9 +98,9 @@ export default {
 
  }
  .column.key {
-  flex: 0 0 20%;
+  flex: 0 0 40%;
  }
  .column.value {
-  flex: 0 0 80%;
+  flex: 0 0 60%;
  }
 </style>
