@@ -24,12 +24,16 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: '/epaas',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
+    allowedHosts: [
+      'bingjunx.com', // 允许访问的域名地址
+      '.bingjunx.com' // .是二级域名的通配符
+    ],
     port: port,
     open: true,
     overlay: {
@@ -37,7 +41,7 @@ module.exports = {
       errors: true
     },
     proxy: { // 外部接口配置代理，解决跨域
-      '/api/v1': {
+      '/epaas/api/v1': {
         'target': 'http://127.0.0.1:5000', // 接口地址
         'secure': false, // false为http访问，true为https访问
         'changeOrigin': true // 跨域访问设置，true代表跨域

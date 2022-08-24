@@ -23,10 +23,10 @@ export default function(roles) {
         meta: { title: 'Resource Register', icon: 'form', roles: ['visitor'] }
       },
       {
-        path: 'DeployProgress',
-        name: 'Deploy Progress',
-        component: () => import('@/views/deploy/progress'),
-        meta: { title: 'Deploy Progress', icon: 'form', roles: ['visitor'] }
+        path: 'ResourceMonitor',
+        name: 'Resource Monitor',
+        component: () => import('@/views/deploy/monitor'),
+        meta: { title: 'Resource Monitor', icon: 'form', roles: ['visitor'] }
       }
     ]
   }]

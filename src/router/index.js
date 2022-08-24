@@ -241,6 +241,7 @@ export const asyncRoutes = [
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
+  base: '/epaas',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
