@@ -33,8 +33,10 @@ export default {
       } else {
         monitor.onload = function() {
           // iframe加载完成后你需要进行的操作
-          monitor.contentWindow.document.getElementsByName('user')[0].value = 'admin'
-          monitor.contentWindow.document.getElementById('current-password').value = 'password'
+          if (typeof monitor.contentWindow.document.getElementsByName('user')[0] !== 'undefined' && typeof monitor.contentWindow.document.getElementById('current-password') !== 'undefined') {
+            monitor.contentWindow.document.getElementsByName('user')[0].value = 'admin'
+            monitor.contentWindow.document.getElementById('current-password').value = 'password'
+          }
           // 以下模拟点击代码无效
           // monitor.contentWindow.document.getElementsByClassName('css-1wkrg9j-button')[0].click()
         }
