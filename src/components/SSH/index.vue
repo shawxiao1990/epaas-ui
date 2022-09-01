@@ -18,7 +18,7 @@ export default {
     }, // 通过父组件传递登录ip
     socketURI: {
       type: String,
-      default: 'ws://' + process.env.VUE_APP_BACKEND_SOCKET + '/api/v1/server/socket'
+      default: 'ws://' + (process.env.VUE_APP_BACKEND_SOCKET ? process.env.VUE_APP_BACKEND_SOCKET : '127.0.0.1:5000') + '/api/v1/server/socket'
     },
     log: {
       type: Boolean,

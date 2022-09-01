@@ -1,8 +1,8 @@
 import CryptoJS from 'crypto-js'
 
 // 需要和后端一致
-const KEY = CryptoJS.enc.Utf8.parse(process.env.VUE_APP_CRYPTO_KEY)
-const IV = CryptoJS.enc.Utf8.parse(process.env.VUE_APP_CRYPTO_IV)
+const KEY = CryptoJS.enc.Utf8.parse(process.env.VUE_APP_CRYPTO_KEY ? process.env.VUE_APP_CRYPTO_KEY : '1234567890123456')
+const IV = CryptoJS.enc.Utf8.parse(process.env.VUE_APP_CRYPTO_IV ? process.env.VUE_APP_CRYPTO_IV : '1234567890123456')
 
 export default {
 

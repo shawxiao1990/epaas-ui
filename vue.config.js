@@ -35,7 +35,7 @@ module.exports = {
       '.bingjunx.com' // .是二级域名的通配符
     ],
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
