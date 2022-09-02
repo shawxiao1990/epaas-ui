@@ -1,0 +1,115 @@
+user  nginx;
+worker_processes  2;
+
+error_log  /var/log/nginx/error.log;
+#pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  20480;
+}
+
+http {
+    include       /etc/nginx/conf/mime.types;
+    default_type  application/octet-stream;
+    resolver ${NAMESERVER} valid=30s;
+
+    log_format  logbody escape=json 'ssllog  [$time_local]  uri: "$uri" https: $scheme post/get: $request_method request_completion: $request_completion alltime: $request_time code: $status remote_client: $remote_addr / $http_referer / $http_host uepstream_addr:$upstream_addr upstream_status:$upstream_status upstream_time:$upstream_response_time' request:"$request" req_body:"$request_body";
+
+    underscores_in_headers on;
+   #access_log  /var/log/nginx/access.log  main;
+    access_log  /var/log/nginx/access.log  logbody;
+    rewrite_log on;
+
+    # server_tag off;
+    # server_info off;
+    # server_tokens off;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #include /etc/nginx/conf.d/*.conf;
+
+    client_max_body_size 250M;
+
+    # rate limit setting, 150 request per second
+    limit_req_zone  $binary_remote_addr  zone=req_one:10m rate=150r/s;
+    # server {
+    #     listen 1081;
+    #     listen [::]:81;
+
+    #     # redirect to HTTPS
+    #     rewrite ^(.*) https://$host$1 permanent;
+    # }
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' close;
+    }
+
+    gzip  on;
+    gzip_static  on;
+
+    server {
+        access_log /var/log/nginx/access.log logbody;
+
+        set $flag "";
+        set $appid_temp "";
+        set $appid "";
+        set $user_id "";
+        set $enterprise_id "";
+
+        if ($http_x_appid != "null") {
+            set $appid $http_x_appid;
+        }
+
+        if ($appid = "") {
+            set $flag "1";
+        }
+
+        if ($http_cookie ~* "appid=([a-z0-9]+)(?:;|$)") {
+            set $flag "${flag}2";
+            set $appid_temp $1;
+        }
+
+        if ($flag = "12") {
+            set $appid $appid_temp;
+        }
+
+        if ($http_cookie ~* "userid=([.%\-a-zA-Z0-9_]+)(?:;|$)") {
+            set $user_id $1;
+        }
+
+        if ($http_x_userid != "") {
+            set $user_id $http_x_userid;
+        }
+
+        if ($http_cookie ~* "enterprise=([.%\-a-zA-Z0-9_]+)(?:;|$)") {
+            set $enterprise_id $1;
+        }
+
+        if ($enterprise_id = "") {
+            set $enterprise_id $http_x_enterprise;
+        }
+
+        if ($enterprise_id = "") {
+            set $enterprise_id $http_x_enterpriseid;
+        }
+
+        listen 1080;
+        #listen [::]:80;
+        proxy_set_header X-AppID $appid;
+        proxy_set_header X-UserID $user_id;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-EnterpriseID $enterprise_id;
+        proxy_http_version 1.1;
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header Content-Security-Policy "img-src * blob: data:; 'unsafe-inline' 'unsafe-eval' data:;media-src * blob: data:;";
+
+        location /epaas {
+            root /home/nginx/build/dist;
+            index  index.html index.htm;
+        }
+    }
+}
