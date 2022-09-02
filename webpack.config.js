@@ -117,7 +117,16 @@ module.exports = (env) => {
                 limit: 10000
               }
             }
-          ]
+          ],
+          exclude: [resolve('src/icons')]
+        },
+        {
+          test: /\.svg$/,
+          loader: 'svg-sprite-loader',
+          include: [resolve('src/icons')],
+          options: {
+            symbolId: 'icon-[name]'
+          }
         },
         {
         // 增加对 SCSS 文件的支持
