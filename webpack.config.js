@@ -71,7 +71,29 @@ module.exports = (env) => {
         import htmlString from './template.html';
         template.html 的文件内容会被转成一个 js 字符串，合并到 js 文件里。
         */
-          use: 'html-loader'
+          // html-loader 默认会把 html 中 <img> 标签的图片解析出来
+          // 这里自定义添加 <link> 标签资源解析出来。供之后的规则打包
+          use: [
+            {
+              loader: 'html-loader',
+              options: {
+                attributes: {
+                  list: [
+                    {
+                      tag: 'img',
+                      attribute: 'src',
+                      type: 'src'
+                    },
+                    {
+                      tag: 'link',
+                      attribute: 'href',
+                      type: 'src'
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         },
 
         {
@@ -85,7 +107,28 @@ module.exports = (env) => {
         */
           use: ['style-loader', 'css-loader']
         },
-
+        {
+          /*
+          匹配 favicon.ico
+          上面的 html-loader 会把入口 index.html 引用的 favicon.ico 图标文件解析出来进行打包
+          打包规则就按照这里指定的 loader 执行
+          */
+          test: /favicon\.ico$/,
+          use: [
+            {
+              // 使用 file-loader
+              loader: 'file-loader',
+              options: {
+                /*
+                static: 指定输出文件夹
+                name：指定文件输出名
+                [hash] 为源文件的hash值，[ext] 为后缀。
+                */
+                name: 'static' + '/[name].[hash:7].[ext]'
+              }
+            }
+          ]
+        },
         {
         /*
         匹配各种格式的图片和字体文件
@@ -114,7 +157,8 @@ module.exports = (env) => {
             {
               loader: 'url-loader',
               options: {
-                limit: 10000
+                limit: 10000,
+                name: 'static' + '/[name].[hash:7].[ext]'
               }
             }
           ],
@@ -161,7 +205,7 @@ module.exports = (env) => {
       可以通过 filename 参数指定输出的文件名
       html-webpack-plugin 也可以不指定 template 参数，它会使用默认的 html 模板。
       */
-        favicon: './src/favicon.ico',
+        // favicon: './src/favicon.ico',
         template: './src/index.html',
 
         /*
