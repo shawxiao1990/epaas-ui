@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  epaas-ui:
+    container_name: epaas-ui
+    image: harbor.bingjunx.com/epaas/epaas-ui:170f0c67-20220905-1418
+    logging:
+      driver: json-file
+      options:
+        max-file: "10"
+        max-size: "100m"
+    environment:
+      - ADMIN_PORT=8080
+    ports:
+      - 1080:1080/tcp
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime

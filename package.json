@@ -1,11 +1,12 @@
 {
-  "name": "vue-admin-template",
-  "version": "4.4.0",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "epaas",
+  "version": "1.0.0",
+  "description": "paas platform",
+  "author": "bingjunxiao",
   "scripts": {
     "webpack-serve": "WEBPACK_SERVE=true webpack-serve --config webpack.config.js",
-    "webpack-dev-server": "webpack-dev-server --config webpack.config.js",
+    "webpack-dev-server": "NODE_ENV=development webpack-dev-server --config webpack.config.js",
+    "webpack-server": "NODE_ENV=production webpack-dev-server --config webpack.config.js",
     "webpack-cli": "webpack-cli",
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",

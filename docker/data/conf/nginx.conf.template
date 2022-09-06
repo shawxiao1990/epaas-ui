@@ -107,9 +107,12 @@ http {
         add_header X-Frame-Options SAMEORIGIN;
         add_header Content-Security-Policy "img-src * blob: data:; 'unsafe-inline' 'unsafe-eval' data:;media-src * blob: data:;";
 
-        location /epaas {
+        location /epaas/ {
             root /home/nginx/build/dist;
             index  index.html index.htm;
         }
+        location /epaas/api/v1 {                                                                                  
+            proxy_pass http://172.17.0.1:5000;                                                                 
+        } 
     }
 }

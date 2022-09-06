@@ -6,4 +6,11 @@ export NAMESERVER=`cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' |
 env
 
 #supervisord -c /etc/supervisord.conf
-/home/nginx/build/dist/run_nginx.sh $@
+cd /etc/nginx/conf
+rm nginx.conf
+
+envsubst '
+$$NAMESERVER
+' < /etc/nginx/conf/nginx.conf.template > /etc/nginx/conf/nginx.conf
+nginx -t
+nginx -g "daemon off;"

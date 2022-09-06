@@ -6,7 +6,7 @@
         :default-active="activeMenu"
         :collapse="isCollapse"
         background-color="#304156"
-        text-color="#bfcbd9t"
+        text-color="#bfcbd9"
         :unique-opened="false"
         active-text-color="#409EFF"
         :collapse-transition="false"

@@ -16,7 +16,7 @@ module.exports = (env) => {
   development：开发环境，它会在配置文件中插入调试相关的选项，比如 moduleId 使用文件路径方便调试
   production：生产环境，webpack 会将代码做压缩等优化
   */
-    mode: dev ? 'development' : 'production',
+    mode: process.env.NODE_ENV,
 
     /*
   配置 source map
@@ -31,8 +31,8 @@ module.exports = (env) => {
     // 配置打包输出相关
     output: {
     // 打包输出目录
-      path: resolve(__dirname, 'dist'),
-      publicPath: '/epaas',
+      path: resolve(__dirname, 'dist/epaas'),
+      publicPath: '/epaas/',
 
       // 入口 js 的打包输出文件名
       filename: 'index.js'
@@ -161,6 +161,7 @@ module.exports = (env) => {
       可以通过 filename 参数指定输出的文件名
       html-webpack-plugin 也可以不指定 template 参数，它会使用默认的 html 模板。
       */
+        favicon: './src/favicon.ico',
         template: './src/index.html',
 
         /*
