@@ -1,6 +1,7 @@
 const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
+const Dotenv = require('dotenv-webpack')
 // const webpack = require('webpack')
 // require('dotenv').config()
 
@@ -214,10 +215,13 @@ module.exports = (env) => {
       */
         chunksSortMode: 'none'
       }),
-      new VueLoaderPlugin()
+      new VueLoaderPlugin(),
       // new webpack.DefinePlugin({
       //   VUE_APP_BASE_API: JSON.stringify(process.env.VUE_APP_BASE_API)
       // })
+      new Dotenv({
+        path: './.env.' + `${process.env.NODE_ENV}`
+      })
     ],
     resolve: {
       alias: {

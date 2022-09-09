@@ -53,6 +53,7 @@
     "chalk": "2.4.2",
     "connect": "3.6.6",
     "css-loader": "^5.2.7",
+    "dotenv-webpack": "^8.0.1",
     "eslint": "6.7.2",
     "eslint-plugin-vue": "6.2.2",
     "file-loader": "^6.2.0",
